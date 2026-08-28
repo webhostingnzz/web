@@ -8604,7 +8604,7 @@ body:not(.single-post) .elementor-widget-table-of-contents{
             .whnz-cards-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-               /* Mobile Adjustments */
+        /* Mobile Adjustments */
         @media (max-width: 900px) {
             .elementor-2259 .whnz-hero {
                 min-height: auto;
@@ -8637,9 +8637,6 @@ body:not(.single-post) .elementor-widget-table-of-contents{
             
             .elementor-2259 .whnz-hero-sub { order: 4; margin: 0 auto 20px; font-size: 15px; }
             .elementor-2259 .whnz-hero .whnz-cta-row { order: 5; justify-content: center; margin-bottom: 20px; }
-            
-            .whnz-why {
-                padding-top: 20px;
             
             .whnz-why {
                 padding-top: 20px; 

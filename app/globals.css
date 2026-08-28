@@ -8604,39 +8604,42 @@ body:not(.single-post) .elementor-widget-table-of-contents{
             .whnz-cards-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* Mobile Adjustments */
+               /* Mobile Adjustments */
         @media (max-width: 900px) {
-            .whnz-hero {
+            .elementor-2259 .whnz-hero {
                 min-height: auto;
                 padding-top: 90px; /* Keeps hero text safely below mobile headers */
                 padding-bottom: 0px; 
             }
-            .whnz-hero-inner { 
+            .elementor-2259 .whnz-hero-inner { 
                 display: flex; 
                 flex-direction: column; 
                 text-align: center; 
                 gap: 0;
             }
-            .whnz-hero-left {
+            .elementor-2259 .whnz-hero-left {
                 margin-left: 0; /* Resets the text offset on mobile */
                 display: contents; /* Allows children to be sorted alongside image */
             }
-            .whnz-hero-tag { order: 1; margin: 0 auto 15px; }
-            .whnz-hero h1 { order: 2; margin-bottom: 5px; }
+            .elementor-2259 .whnz-hero-tag { order: 1; margin: 0 auto 15px; }
+            .elementor-2259 .whnz-hero h1 { order: 2; margin-bottom: 5px; }
             
-            .whnz-hero-right { 
+            .elementor-2259 .whnz-hero-right { 
                 order: 3; 
                 margin: 5px 0 10px; /* Overrides the desktop -80px margin */
                 justify-content: center; 
             }
 
-            .whnz-hero-img {
+            .elementor-2259 .whnz-hero-img {
                 max-width: 30%; 
                 margin: 0 auto;
             }
             
-            .whnz-hero-sub { order: 4; margin: 0 auto 20px; font-size: 15px; }
-            .whnz-cta-row { order: 5; justify-content: center; margin-bottom: 20px; }
+            .elementor-2259 .whnz-hero-sub { order: 4; margin: 0 auto 20px; font-size: 15px; }
+            .elementor-2259 .whnz-hero .whnz-cta-row { order: 5; justify-content: center; margin-bottom: 20px; }
+            
+            .whnz-why {
+                padding-top: 20px;
             
             .whnz-why {
                 padding-top: 20px; 

@@ -48,7 +48,7 @@ export default function WebDesignServicePageClient() {
 
       e.preventDefault();
       const originalText = target.textContent;
-      target.textContent = 'Loading…';
+      target.textContent = 'Proceeding to Checkout…';
       target.style.pointerEvents = 'none';
 
       try {

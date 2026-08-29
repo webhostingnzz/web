@@ -56,6 +56,24 @@ export async function POST(request: NextRequest) {
           quantity: 1,
         },
       ],
+      custom_fields: [
+        {
+          key: 'company_name',
+          label: { type: 'custom', custom: 'Company Name' },
+          type: 'text',
+        },
+        {
+          key: 'contact_number',
+          label: { type: 'custom', custom: 'Contact Number' },
+          type: 'text',
+        },
+        {
+          key: 'preferred_colors',
+          label: { type: 'custom', custom: 'Preferred Colors' },
+          type: 'text',
+          optional: true,
+        },
+      ],
       success_url: `${origin}/web-design-service/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/web-design-service?checkout=cancelled`,
       metadata: {

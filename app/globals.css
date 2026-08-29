@@ -11167,3 +11167,66 @@ ul#button-table-top {
 @media (max-width: 600px) {
     .whnz-blog-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Blog: Table of Contents ── */
+.whnz-blog-toc {
+    background: #fff;
+    border: 1px solid rgba(11,18,32,0.1);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+}
+.whnz-blog-toc-title {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 17px;
+    color: #0b1220; margin-bottom: 16px;
+}
+.whnz-blog-toc-title svg { color: #0CC0DF; flex-shrink: 0; }
+.whnz-blog-toc-list {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 12px;
+}
+.whnz-blog-toc-list li { border-bottom: 1px solid rgba(11,18,32,0.06); padding-bottom: 12px; }
+.whnz-blog-toc-list li:last-child { border-bottom: none; padding-bottom: 0; }
+.whnz-blog-toc-list a {
+    font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
+    color: #0b1220; text-decoration: none;
+}
+.whnz-blog-toc-list a:hover { color: #0CC0DF; }
+.whnz-blog-toc-toggle {
+    display: flex; align-items: center; gap: 6px;
+    background: none; border: none; cursor: pointer; padding: 0;
+    margin-top: 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 14px;
+    color: #0CC0DF;
+}
+
+/* ── Blog: Pagination ── */
+.whnz-blog-pagination {
+    display: flex; justify-content: center; align-items: center; gap: 10px;
+    margin-top: 56px;
+}
+.whnz-blog-page-btn {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    border: 1px solid rgba(11,18,32,0.12);
+    background: #fff;
+    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px;
+    color: #0b1220;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.whnz-blog-page-btn:hover { border-color: #0CC0DF; color: #0CC0DF; }
+.whnz-blog-page-btn.active {
+    background: #0CC0DF; border-color: #0CC0DF; color: #fff;
+}
+.whnz-blog-page-next {
+    display: flex; align-items: center; gap: 8px;
+    height: 42px; padding: 0 20px;
+    border-radius: 10px; border: none;
+    background: #0b1220; color: #fff;
+    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.whnz-blog-page-next:hover { background: #0CC0DF; }

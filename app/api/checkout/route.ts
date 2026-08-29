@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
           label: { type: 'custom', custom: 'Web Design Info (preferred colors, style, etc.)' },
           type: 'text',
           optional: true,
-          text: { maximum_length: 500 },
+          text: { maximum_length: 255 },
         },
       ],
       success_url: `${origin}/web-design-service/success?session_id={CHECKOUT_SESSION_ID}`,

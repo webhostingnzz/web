@@ -20,30 +20,43 @@ export default function BlogIndexClient() {
     <BlogChrome>
       <div className="whnz-blog-index-wrap">
         <div className="whnz-blog-index-header">
-          <h1 className="whnz-blog-index-title">Blog</h1>
+          <h1 className="whnz-blog-index-title">
+            <span className="accent">Web Hosting NZ</span>
+            <span className="divider">|</span>
+            <span className="rest">Blog</span>
+          </h1>
           <p className="whnz-blog-index-sub">
-            Guides and tips on web hosting, domains, SEO, and running an online business in New Zealand.
+            Expert hosting insights, digital marketing strategies, and business tips to keep your website fast and your brand growing in NZ.
           </p>
         </div>
 
         <div className="whnz-blog-grid">
           {sorted.map((post) => (
             <Link key={post.slug} href={`/${post.slug}`} className="whnz-blog-card">
-              {post.featured_image && (
-                <img
-                  src={post.featured_image.url}
-                  alt={post.featured_image.alt}
-                  className="whnz-blog-card-img"
-                />
-              )}
-              <div className="whnz-blog-card-body">
-                {post.categories[0] && (
-                  <div className="whnz-blog-card-cat">{post.categories[0]}</div>
+              <div className="whnz-blog-card-imgwrap">
+                {post.featured_image && (
+                  <img
+                    src={post.featured_image.url}
+                    alt={post.featured_image.alt}
+                    className="whnz-blog-card-img"
+                  />
                 )}
+                {post.categories[0] && (
+                  <span className="whnz-blog-card-cat">{post.categories[0]}</span>
+                )}
+              </div>
+              <div className="whnz-blog-card-body">
+                <div className="whnz-blog-card-date">{formatDate(post.date)}</div>
                 <h2 className="whnz-blog-card-title">{post.title}</h2>
                 <p className="whnz-blog-card-excerpt">
                   {stripHtml(post.excerpt_html).slice(0, 110)}...
                 </p>
+                <span className="whnz-blog-card-readmore">
+                  Read Article
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </span>
               </div>
             </Link>
           ))}

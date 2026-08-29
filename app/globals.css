@@ -11102,9 +11102,11 @@ ul#button-table-top {
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
     font-size: clamp(32px, 5vw, 52px);
-    color: #0b1220;
     margin: 0 0 16px;
 }
+.whnz-blog-index-title .accent { color: #0CC0DF; }
+.whnz-blog-index-title .divider { color: #0b1220; margin: 0 10px; }
+.whnz-blog-index-title .rest { color: #0b1220; }
 .whnz-blog-index-sub {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 17px;
@@ -11131,11 +11133,19 @@ ul#button-table-top {
     box-shadow: 0 20px 50px rgba(11,18,32,0.12);
     border-color: rgba(12,192,223,0.3);
 }
+.whnz-blog-card-imgwrap { position: relative; }
 .whnz-blog-card-img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
-.whnz-blog-card-body { padding: 22px; }
 .whnz-blog-card-cat {
+    position: absolute; top: 14px; left: 14px;
     font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase; color: #0CC0DF; margin-bottom: 10px;
+    letter-spacing: 0.04em; text-transform: uppercase; color: #fff;
+    background: #0CC0DF; padding: 7px 14px; border-radius: 100px;
+    box-shadow: 0 4px 12px rgba(12,192,223,0.35);
+}
+.whnz-blog-card-body { padding: 20px 22px 22px; }
+.whnz-blog-card-date {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px;
+    color: rgba(11,18,32,0.45); margin-bottom: 8px;
 }
 .whnz-blog-card-title {
     font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px;
@@ -11143,8 +11153,13 @@ ul#button-table-top {
 }
 .whnz-blog-card-excerpt {
     font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
-    color: rgba(11,18,32,0.6); line-height: 1.6;
+    color: rgba(11,18,32,0.6); line-height: 1.6; margin-bottom: 14px;
 }
+.whnz-blog-card-readmore {
+    font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700;
+    color: #0CC0DF; display: inline-flex; align-items: center; gap: 6px;
+}
+.whnz-blog-card:hover .whnz-blog-card-readmore { gap: 10px; }
 @media (max-width: 900px) {
     .whnz-blog-grid { grid-template-columns: repeat(2, 1fr); }
     .whnz-blog-wrap, .whnz-blog-index-wrap { padding-top: 140px; }

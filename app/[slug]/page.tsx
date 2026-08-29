@@ -25,6 +25,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       publishedTime: post.date,
       modifiedTime: post.modified,
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.seo_title,
+      description: post.seo_description,
+      images: post.featured_image ? [post.featured_image.url] : undefined,
+    },
   };
 }
 

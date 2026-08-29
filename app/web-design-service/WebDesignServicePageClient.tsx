@@ -63,9 +63,12 @@ export default function WebDesignServicePageClient() {
         } else {
           throw new Error(data?.error || 'Checkout failed to start');
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('Checkout error:', err);
-        alert('Sorry, something went wrong starting checkout. Please try again or contact us.');
+        // Temporarily showing the real error message so setup issues can be
+        // diagnosed from the browser. Fine to simplify back to a generic
+        // message once checkout is confirmed working end-to-end.
+        alert(`Checkout could not start: ${err?.message || 'unknown error'}\n\nPlease try again or contact us.`);
         target.textContent = originalText;
         target.style.pointerEvents = '';
       }

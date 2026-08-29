@@ -26,9 +26,10 @@ export async function POST(request: NextRequest) {
     // Created here, not at module scope, so the build doesn't fail in
     // environments where STRIPE_SECRET_KEY isn't set yet (Stripe's SDK
     // throws immediately in its constructor if the key is missing).
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-      apiVersion: '2025-01-27.acacia' as any,
-    });
+    // No apiVersion is specified — the installed Stripe package already
+    // knows the correct version to use for itself; pinning a guessed
+    // version string here can cause requests to fail if it doesn't match.
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 
     const body = await request.json();
     const tierKey = body?.tier;
@@ -85,6 +86,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: session.url });
   } catch (err: any) {
     console.error('Stripe checkout session error:', err);
-    return NextResponse.json({ error: 'Unable to start checkout' }, { status: 500 });
+    // Temporarily including the real error message so we can diagnose setup
+    // issues (missing/invalid API key, etc.) from the browser without needing
+    // server log access. Safe to remove once checkout is confirmed working.
+    return NextResponse.json({ error: err?.message || 'Unable to start checkout' }, { status: 500 });
   }
 }

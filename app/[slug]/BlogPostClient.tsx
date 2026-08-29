@@ -79,6 +79,8 @@ export default function BlogPostClient({ post }: { post: Post }) {
             src={post.featured_image.url}
             alt={post.featured_image.alt}
             className="whnz-blog-featured-img"
+            fetchPriority="high"
+            decoding="async"
           />
         )}
 

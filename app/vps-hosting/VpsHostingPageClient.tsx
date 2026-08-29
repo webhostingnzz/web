@@ -7,15 +7,17 @@ import pageScripts from '../data/vps_hosting_scripts.json';
 export default function VpsHostingPageClient() {
   useEffect(() => {
     let jqLoaded = false;
-    let jqUiLoaded = false;
 
     const tryRunScripts = () => {
-      // The VPS plan slider (`jQuery("#slider").slider(...)`) is a jQuery
-      // UI widget, not plain jQuery — both libraries have to be loaded
-      // before the ported page script runs, or `.slider is not a function`
-      // throws and the whole script (slider init, price/spec updates,
-      // Order Now link) silently fails.
-      if (!jqLoaded || !jqUiLoaded) return;
+      // The page's own ported script already bundles a COMPLETE jQuery UI
+      // (widget factory + mouse mixin + the slider widget itself) — it's
+      // the original theme's local, non-CDN jQuery UI that got scraped in
+      // along with the rest of the page. We only need jQuery core loaded;
+      // loading jQuery UI separately from the CDN on top of that caused two
+      // competing widget registrations, which is why the slider rendered
+      // but dragging didn't work (mouse-interaction binding got tangled
+      // between the two copies).
+      if (!jqLoaded) return;
       if ((window as any).__whnz_vps_hosting_ScriptsRan) return;
       (window as any).__whnz_vps_hosting_ScriptsRan = true;
       try {
@@ -28,24 +30,13 @@ export default function VpsHostingPageClient() {
       }
     };
 
-    // jQuery UI extends jQuery's prototype, so it must not start loading
-    // until jQuery core has actually finished executing — load it inside
-    // jQuery's onload callback rather than in parallel.
-    const jqUi = document.createElement('script');
-    jqUi.src = 'https://code.jquery.com/ui/1.13.2/jquery-ui.min.js';
-    jqUi.onload = () => { jqUiLoaded = true; tryRunScripts(); };
-
     const jq = document.createElement('script');
     jq.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
-    jq.onload = () => {
-      jqLoaded = true;
-      document.body.appendChild(jqUi);
-    };
+    jq.onload = () => { jqLoaded = true; tryRunScripts(); };
     document.body.appendChild(jq);
 
     return () => {
       document.body.removeChild(jq);
-      if (jqUi.parentNode) document.body.removeChild(jqUi);
     };
   }, []);
 

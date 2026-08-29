@@ -2,6 +2,7 @@ import './globals.css';
 import GlobalScripts from './GlobalScripts';
 
 export const metadata = {
+  metadataBase: new URL('https://webhosting.co.nz'),
   title: 'Webhosting NZ',
   description: 'Fast, secure NZ web hosting, domains, and email.',
 };

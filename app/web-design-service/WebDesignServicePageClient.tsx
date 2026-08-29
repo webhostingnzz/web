@@ -48,7 +48,11 @@ export default function WebDesignServicePageClient() {
 
       e.preventDefault();
       const originalText = target.textContent;
+      const originalFontSize = target.style.fontSize;
+      const originalWhiteSpace = target.style.whiteSpace;
       target.textContent = 'Proceeding to Checkout…';
+      target.style.fontSize = '13px';
+      target.style.whiteSpace = 'nowrap';
       target.style.pointerEvents = 'none';
 
       try {
@@ -70,6 +74,8 @@ export default function WebDesignServicePageClient() {
         // message once checkout is confirmed working end-to-end.
         alert(`Checkout could not start: ${err?.message || 'unknown error'}\n\nPlease try again or contact us.`);
         target.textContent = originalText;
+        target.style.fontSize = originalFontSize;
+        target.style.whiteSpace = originalWhiteSpace;
         target.style.pointerEvents = '';
       }
     };

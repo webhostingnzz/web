@@ -3,21 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import BlogChrome from '../lib/BlogChrome';
+import type { BlogPost, TocItem } from '../lib/blogApi';
 
-type TocItem = { id: string; text: string; level: string };
-
-type Post = {
-  slug: string;
-  title: string;
-  seo_title: string;
-  seo_description: string;
-  date: string;
-  content_html: string;
-  featured_image: { url: string; alt: string; width?: number; height?: number } | null;
-  categories: string[];
-  tags: string[];
-  toc?: TocItem[];
-};
+type Post = BlogPost;
 
 function formatDate(iso: string) {
   const d = new Date(iso);

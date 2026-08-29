@@ -1,14 +1,18 @@
 import { notFound } from 'next/navigation';
-import posts from '../data/blog_posts.json';
+import { getAllPosts, getPostBySlug } from '../lib/blogApi';
 import BlogPostClient from './BlogPostClient';
 
+// Re-check WordPress for new/edited posts periodically without a redeploy.
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
+  const posts = await getAllPosts();
   return posts.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = posts.find((p) => p.slug === slug);
+  const post = await getPostBySlug(slug);
   if (!post) return {};
   return {
     title: post.seo_title,
@@ -26,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = posts.find((p) => p.slug === slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
   return <BlogPostClient post={post} />;
 }

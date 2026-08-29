@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import BlogChrome from '../lib/BlogChrome';
-import posts from '../data/blog_posts.json';
+import type { BlogPost } from '../lib/blogApi';
 
 const PER_PAGE = 9;
 
@@ -16,7 +16,7 @@ function stripHtml(html: string) {
   return html.replace(/<[^>]+>/g, '').trim();
 }
 
-export default function BlogIndexClient() {
+export default function BlogIndexClient({ posts }: { posts: BlogPost[] }) {
   const sorted = [...posts].sort((a, b) => (a.date < b.date ? 1 : -1));
   const totalPages = Math.ceil(sorted.length / PER_PAGE);
   const [page, setPage] = useState(1);

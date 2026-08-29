@@ -68,10 +68,11 @@ export async function POST(request: NextRequest) {
           type: 'text',
         },
         {
-          key: 'preferred_colors',
-          label: { type: 'custom', custom: 'Preferred Colors' },
+          key: 'web_design_info',
+          label: { type: 'custom', custom: 'Web Design Info (preferred colors, style, etc.)' },
           type: 'text',
           optional: true,
+          text: { maximum_length: 500 },
         },
       ],
       success_url: `${origin}/web-design-service/success?session_id={CHECKOUT_SESSION_ID}`,

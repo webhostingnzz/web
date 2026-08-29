@@ -9733,6 +9733,31 @@ body:not(.single-post) .elementor-widget-table-of-contents{
   font-weight: 700;
   padding-right: 5px;
 }
+/* Essential jQuery UI slider structure (positioning only — no theme
+   images). Needed for the slider handle/range to render and position
+   correctly at all; the custom rules below only handle colors/sizing. */
+.ui-slider { position: relative; text-align: left; }
+.ui-slider .ui-slider-handle {
+  position: absolute;
+  z-index: 2;
+  cursor: default;
+  -ms-touch-action: none;
+  touch-action: none;
+}
+.ui-slider .ui-slider-range {
+  position: absolute;
+  z-index: 1;
+  font-size: .7em;
+  display: block;
+  border: 0;
+  background-position: 0 0;
+}
+.ui-slider-horizontal { height: .8em; }
+.ui-slider-horizontal .ui-slider-handle { top: -.3em; margin-left: -.6em; }
+.ui-slider-horizontal .ui-slider-range { top: 0; height: 100%; }
+.ui-slider-horizontal .ui-slider-range-min { left: 0; }
+.ui-slider-horizontal .ui-slider-range-max { right: 0; }
+
 .hostiko_vps_section .ui-slider .ui-slider-handle {
   width: 30px;
   height: 30px;
@@ -11000,13 +11025,14 @@ ul#button-table-top {
     background: rgba(12,192,223,0.1); color: #0CC0DF;
     padding: 6px 14px; border-radius: 100px;
 }
-.whnz-blog-title {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: clamp(30px, 4vw, 46px);
-    line-height: 1.15;
-    color: #0b1220;
-    margin: 0 0 20px;
+h1.whnz-blog-title {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: clamp(30px, 4vw, 46px) !important;
+    line-height: 1.15 !important;
+    color: #0b1220 !important;
+    margin: 0 0 20px !important;
+    text-transform: none !important;
 }
 .whnz-blog-meta {
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -11030,19 +11056,21 @@ ul#button-table-top {
     color: rgba(11,18,32,0.82);
 }
 .whnz-blog-content h2 {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: clamp(24px, 3vw, 32px);
-    color: #0b1220;
-    margin: 48px 0 20px;
-    line-height: 1.25;
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: clamp(24px, 3vw, 32px) !important;
+    color: #0b1220 !important;
+    margin: 48px 0 20px !important;
+    line-height: 1.25 !important;
+    text-transform: none !important;
 }
 .whnz-blog-content h3 {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 22px;
-    color: #0b1220;
-    margin: 36px 0 16px;
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 22px !important;
+    color: #0b1220 !important;
+    margin: 36px 0 16px !important;
+    text-transform: none !important;
 }
 .whnz-blog-content p { margin: 0 0 24px; }
 .whnz-blog-content ul, .whnz-blog-content ol { margin: 0 0 24px; padding-left: 24px; }
@@ -11082,11 +11110,12 @@ ul#button-table-top {
     padding: 160px 20px 80px;
 }
 .whnz-blog-index-header { text-align: center; margin-bottom: 56px; }
-.whnz-blog-index-title {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: clamp(32px, 5vw, 52px);
-    margin: 0 0 16px;
+h1.whnz-blog-index-title {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: clamp(32px, 5vw, 52px) !important;
+    margin: 0 0 16px !important;
+    text-transform: none !important;
 }
 .whnz-blog-index-title .accent { color: #0CC0DF; }
 .whnz-blog-index-title .divider { color: #0b1220; margin: 0 10px; }
@@ -11131,9 +11160,10 @@ ul#button-table-top {
     font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px;
     color: rgba(11,18,32,0.45); margin-bottom: 8px;
 }
-.whnz-blog-card-title {
-    font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
-    color: #0b1220; line-height: 1.4; margin: 0 0 10px;
+.whnz-blog-card-body h2.whnz-blog-card-title {
+    font-family: 'Outfit', sans-serif !important; font-weight: 700 !important; font-size: 18px !important;
+    color: #0b1220 !important; line-height: 1.35 !important; margin: 0 0 10px !important;
+    text-transform: none !important;
 }
 .whnz-blog-card-excerpt {
     font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;

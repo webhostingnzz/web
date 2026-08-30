@@ -3,7 +3,9 @@
 import { useEffect } from 'react';
 import pageHtml from '../data/web_hosting_html.json';
 import pageScripts from '../data/web_hosting_scripts.json';
-import { initHostikoPricingWidgets } from '../lib/initHostikoPricingWidgets';
+import PricingCards from '../components/PricingCards';
+import DomSectionReplacer from '../components/DomSectionReplacer';
+import { webHostingPricing } from '../data/pricingPlans';
 
 // Fix for the plan comparison table (Essentials/Growth/Premium/Elite tabs).
 // The original theme's JS for this isn't part of the page content, so this
@@ -49,14 +51,6 @@ export default function WebHostingPageClient() {
       initComparisonTableTabs();
     }
 
-    // Order Now buttons + price display: not part of the original scraped
-    // page scripts (they live in an external plugin JS file), so wire them
-    // up manually.
-    if (!(window as any).__whnz_web_hosting_PricingInit) {
-      (window as any).__whnz_web_hosting_PricingInit = true;
-      initHostikoPricingWidgets();
-    }
-
     let jqLoaded = false;
 
     const tryRunScripts = () => {
@@ -83,5 +77,12 @@ export default function WebHostingPageClient() {
     };
   }, []);
 
-  return <div dangerouslySetInnerHTML={{ __html: pageHtml as string }} />;
+  return (
+    <>
+      <div dangerouslySetInnerHTML={{ __html: pageHtml as string }} />
+      <DomSectionReplacer targetId="pricing-sec">
+        <PricingCards data={webHostingPricing} />
+      </DomSectionReplacer>
+    </>
+  );
 }

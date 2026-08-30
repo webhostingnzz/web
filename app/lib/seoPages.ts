@@ -1,0 +1,55 @@
+export type SeoPageDefault = {
+  slug: string;
+  route: string;
+  label: string;
+  fallbackTitle: string;
+  fallbackDescription: string;
+};
+
+export const SEO_PAGES: SeoPageDefault[] = [
+  { slug: 'home', route: '/', label: 'Home',
+    fallbackTitle: 'Cheapest Web Hosting In New Zealand | Just 4.49 NZD | Fast & Secure Hosting Plans',
+    fallbackDescription: 'Get fast, secure managed web hosting in NZ. High-speed servers, CDN, backups, and 24/7 support for WordPress, cloud, and VPS hosting. Choose your plan today.' },
+  { slug: 'about', route: '/about', label: 'About',
+    fallbackTitle: 'About Webhosting NZ | Trusted Web Hosting Company In NZ',
+    fallbackDescription: 'Learn about Webhosting NZ—your trusted New Zealand web hosting company delivering fast, secure, and reliable hosting with global infrastructure and expert support.' },
+  { slug: 'contact', route: '/contact', label: 'Contact',
+    fallbackTitle: 'Contact Webhosting NZ | Fast Hosting Support & Assistance',
+    fallbackDescription: 'Contact Webhosting NZ for fast, reliable hosting support. Reach our team for sales, technical help, billing, or general inquiries. We\u2019re here to assist you 24/7.' },
+  { slug: 'web-hosting', route: '/web-hosting', label: 'Web Hosting',
+    fallbackTitle: 'Fast & Secure Web Hosting NZ | Affordable SSD Hosting Plans',
+    fallbackDescription: 'Get fast, secure SSD web hosting in NZ with free SSL, backups, staging, CDN, and 24/7 support. Choose from affordable hosting plans built for NZ businesses.' },
+  { slug: 'wordpress-hosting', route: '/wordpress-hosting', label: 'WordPress Hosting',
+    fallbackTitle: 'Managed WordPress Hosting NZ | Fast & Secure WP Hosting',
+    fallbackDescription: 'Get fast, secure managed WordPress hosting in NZ with staging, cloning, SSD storage, backups, CDN, and 24/7 support. Choose your perfect WP hosting plan.' },
+  { slug: 'vps-hosting', route: '/vps-hosting', label: 'VPS Hosting',
+    fallbackTitle: 'High-Performance VPS Hosting NZ | Fast SSD Virtual Servers',
+    fallbackDescription: 'Get lightning-fast SSD VPS hosting in NZ with instant deployment, unlimited bandwidth, anti-DDoS protection, and full root access. Choose your VPS plan today.' },
+  { slug: 'cloud-servers', route: '/cloud-servers', label: 'Cloud Servers',
+    fallbackTitle: 'Managed Cloud Servers NZ | Fast Scalable Multi-Platform Hosting',
+    fallbackDescription: 'Get lightning-fast managed cloud servers in NZ with SSD storage, global data centres, scaling, security, and full control. Deploy your apps with top performance.' },
+  { slug: 'website-builder-hosting', route: '/website-builder-hosting', label: 'Website Builder',
+    fallbackTitle: 'Website Builder Hosting NZ | Easy Drag-and-Drop Site Builder',
+    fallbackDescription: 'Build your website easily with our website builder hosting. Drag-and-drop tools, SEO features, free SSL, backups, CDN, and fast NZ hosting. Start today.' },
+  { slug: 'business-email-hosting', route: '/business-email-hosting', label: 'Business Email',
+    fallbackTitle: 'Business Email Hosting NZ | Secure Business Mail',
+    fallbackDescription: 'Upgrade your brand with professional business email hosting in NZ. Secure, fast business mail starting at just $3.99/mo. Free old email migration. Order today!' },
+  { slug: 'web-design-service', route: '/web-design-service', label: 'Web Design Service',
+    fallbackTitle: 'Affordable Web Design Service | With 1 Year Free Hosting',
+    fallbackDescription: 'We provide modern and clean web design service for affordable prices for businesses in New Zealand with free hosting included.' },
+  { slug: 'domain', route: '/domain', label: 'Domain',
+    fallbackTitle: 'Domain Registration NZ | Buy Cheap NZ & Global Domains',
+    fallbackDescription: 'Register your domain name in NZ at low, transparent yearly prices. Search .co.nz, .nz, .com, .net, .org and more. Free mailbox, DNS control, and easy domain management.' },
+  { slug: 'privacy-policy', route: '/privacy-policy', label: 'Privacy Policy',
+    fallbackTitle: 'Privacy Policy \u2013 Webhosting NZ | Data Protection & Rights',
+    fallbackDescription: 'Read the Webhosting NZ Privacy Policy. Learn how we collect, use, store, and protect your personal data under the New Zealand Privacy Act 2020.' },
+  { slug: 'terms-and-conditions', route: '/terms-and-conditions', label: 'Terms & Conditions',
+    fallbackTitle: 'Terms And Conditions \u2013 Webhosting NZ | Service Agreement',
+    fallbackDescription: 'Read the Webhosting NZ Terms and Conditions covering service use, payments, refunds, AUP, data security, and legal obligations for all hosting and domain services.' },
+  { slug: 'free-google-review-qr-code-generator', route: '/free-google-review-qr-code-generator', label: 'QR Code Generator',
+    fallbackTitle: 'Free Google Review QR Code Generator | WebHosting NZ',
+    fallbackDescription: 'Boost your local SEO with our Free Google Review QR Code Generator. Create custom, print-ready cards for your business in seconds. No sign-up required!' },
+  { slug: 'blog', route: '/blog', label: 'Blog',
+    fallbackTitle: 'Blog | Webhosting NZ',
+    fallbackDescription: 'Guides and tips on web hosting, domains, SEO, and running an online business in New Zealand.' },
+];

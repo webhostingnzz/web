@@ -1,21 +1,25 @@
 import ContactPageClient from './ContactPageClient';
+import { getSeoMetadata } from '../lib/getSeoMetadata';
 
-export const metadata = {
-  title: 'Contact Webhosting NZ | Fast Hosting Support & Assistance',
-  description: 'Contact Webhosting NZ for fast, reliable hosting support. Reach our team for sales, technical help, billing, or general inquiries. We’re here to assist you 24/7.',
-  openGraph: {
-    title: 'Contact Webhosting NZ | Fast Hosting Support & Assistance',
-    description: 'Contact Webhosting NZ for fast, reliable hosting support. Reach our team for sales, technical help, billing, or general inquiries. We’re here to assist you 24/7.',
-    images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.png'],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Contact Webhosting NZ | Fast Hosting Support & Assistance',
-    description: 'Contact Webhosting NZ for fast, reliable hosting support. Reach our team for sales, technical help, billing, or general inquiries. We’re here to assist you 24/7.',
-    images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.png'],
-  },
-};
+export async function generateMetadata() {
+  const seo = await getSeoMetadata('contact');
+  return {
+    title: seo.title,
+    description: seo.description,
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.webp'],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.webp'],
+    },
+  };
+}
 
 export default function ContactPage() {
   return <ContactPageClient />;

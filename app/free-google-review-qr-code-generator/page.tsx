@@ -1,21 +1,25 @@
 import FreeGoogleReviewQrCodeGeneratorPageClient from './FreeGoogleReviewQrCodeGeneratorPageClient';
+import { getSeoMetadata } from '../lib/getSeoMetadata';
 
-export const metadata = {
-  title: 'Free Google Review QR Code Generator | WebHosting NZ',
-  description: 'Boost your local SEO with our Free Google Review QR Code Generator. Create custom, print-ready cards for your business in seconds. No sign-up required!',
-  openGraph: {
-    title: 'Free Google Review QR Code Generator | WebHosting NZ',
-    description: 'Boost your local SEO with our Free Google Review QR Code Generator. Create custom, print-ready cards for your business in seconds. No sign-up required!',
-    images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.png'],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Free Google Review QR Code Generator | WebHosting NZ',
-    description: 'Boost your local SEO with our Free Google Review QR Code Generator. Create custom, print-ready cards for your business in seconds. No sign-up required!',
-    images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.png'],
-  },
-};
+export async function generateMetadata() {
+  const seo = await getSeoMetadata('free-google-review-qr-code-generator');
+  return {
+    title: seo.title,
+    description: seo.description,
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.webp'],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.webp'],
+    },
+  };
+}
 
 export default function FreeGoogleReviewQrCodeGeneratorPage() {
   return <FreeGoogleReviewQrCodeGeneratorPageClient />;

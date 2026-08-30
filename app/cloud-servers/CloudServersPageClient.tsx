@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
-import pageHtml from '../data/cloud_servers_html.json';
 import pageScripts from '../data/cloud_servers_scripts.json';
 
-export default function CloudServersPageClient() {
+export default function CloudServersPageClient({ pageHtml }: { pageHtml: string }) {
   useEffect(() => {
     let jqLoaded = false;
 

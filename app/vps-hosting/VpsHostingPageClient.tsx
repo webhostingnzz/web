@@ -3,11 +3,18 @@
 import { useEffect } from 'react';
 import pageHtml from '../data/vps_hosting_html.json';
 import pageScripts from '../data/vps_hosting_scripts.json';
+import { applyVpsPricingOverride } from '../lib/buildVpsScriptOverride';
+import type { CustomPricingItem } from '../lib/getCustomPricing';
 
-export default function VpsHostingPageClient() {
+export default function VpsHostingPageClient({ vpsTiers }: { vpsTiers: CustomPricingItem[] }) {
   useEffect(() => {
     let jqLoaded = false;
     let jqUiLoaded = false;
+
+    // Regenerate the slider's data arrays from live database pricing (if
+    // any rows exist yet), otherwise this returns the original scraped
+    // script completely unchanged.
+    const effectiveScript = applyVpsPricingOverride(pageScripts as string, vpsTiers);
 
     const tryRunScripts = () => {
       // The VPS plan slider (`jQuery("#slider").slider(...)`) is a jQuery
@@ -24,7 +31,7 @@ export default function VpsHostingPageClient() {
       (window as any).__whnz_vps_hosting_ScriptsRan = true;
       try {
         // eslint-disable-next-line no-new-func
-        const fn = new Function(pageScripts as string);
+        const fn = new Function(effectiveScript);
         fn();
         document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true, cancelable: true }));
       } catch (e) {

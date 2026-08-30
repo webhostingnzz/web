@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import pageHtml from '../data/web_design_service_html.json';
 import pageScripts from '../data/web_design_service_scripts.json';
 
 // Maps the original WooCommerce product IDs (still present in the ported
@@ -12,7 +11,7 @@ const PRODUCT_ID_TO_TIER: Record<string, string> = {
   '4456': 'enterprise',
 };
 
-export default function WebDesignServicePageClient() {
+export default function WebDesignServicePageClient({ pageHtml }: { pageHtml: string }) {
   useEffect(() => {
     let jqLoaded = false;
 

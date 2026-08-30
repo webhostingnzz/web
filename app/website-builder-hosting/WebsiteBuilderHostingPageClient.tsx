@@ -5,7 +5,7 @@ import pageHtml from '../data/website_builder_hosting_html.json';
 import pageScripts from '../data/website_builder_hosting_scripts.json';
 import PricingCards from '../components/PricingCards';
 import DomSectionReplacer from '../components/DomSectionReplacer';
-import { websiteBuilderPricing } from '../data/pricingPlans';
+import type { PricingPageData } from '../data/pricingPlans';
 
 // Fix for the plan comparison table (Essentials/Growth/Premium/Elite tabs).
 // The original theme's JS for this isn't part of the page content, so this
@@ -43,7 +43,7 @@ function initComparisonTableTabs() {
     });
 }
 
-export default function WebsiteBuilderHostingPageClient() {
+export default function WebsiteBuilderHostingPageClient({ pricingData }: { pricingData: PricingPageData }) {
   useEffect(() => {
     // Run independently of jQuery — this fix doesn't need it.
     if (!(window as any).__whnz_website_builder_hosting_TabsInit) {
@@ -82,7 +82,7 @@ export default function WebsiteBuilderHostingPageClient() {
     <>
       <div dangerouslySetInnerHTML={{ __html: pageHtml as string }} />
       <DomSectionReplacer targetId="pricing-sec">
-        <PricingCards data={websiteBuilderPricing} />
+        <PricingCards data={pricingData} />
       </DomSectionReplacer>
     </>
   );

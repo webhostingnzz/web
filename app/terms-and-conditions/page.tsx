@@ -1,21 +1,25 @@
 import TermsAndConditionsPageClient from './TermsAndConditionsPageClient';
+import { getSeoMetadata } from '../lib/getSeoMetadata';
 
-export const metadata = {
-  title: 'Terms And Conditions – Webhosting NZ | Service Agreement',
-  description: 'Read the Webhosting NZ Terms and Conditions covering service use, payments, refunds, AUP, data security, and legal obligations for all hosting and domain services.',
-  openGraph: {
-    title: 'Terms And Conditions – Webhosting NZ | Service Agreement',
-    description: 'Read the Webhosting NZ Terms and Conditions covering service use, payments, refunds, AUP, data security, and legal obligations for all hosting and domain services.',
-    images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.png'],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Terms And Conditions – Webhosting NZ | Service Agreement',
-    description: 'Read the Webhosting NZ Terms and Conditions covering service use, payments, refunds, AUP, data security, and legal obligations for all hosting and domain services.',
-    images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.png'],
-  },
-};
+export async function generateMetadata() {
+  const seo = await getSeoMetadata('terms-and-conditions');
+  return {
+    title: seo.title,
+    description: seo.description,
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.webp'],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/wp-imported/webhosting.co.nz/uploads/2026/02/Untitled-design-78.webp'],
+    },
+  };
+}
 
 export default function TermsAndConditionsPage() {
   return <TermsAndConditionsPageClient />;

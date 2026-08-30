@@ -1,22 +1,28 @@
 import WordpressHostingPageClient from './WordpressHostingPageClient';
+import { getSeoMetadata } from '../lib/getSeoMetadata';
+import { getPricingPageData } from '../lib/getPricingPlans';
 
-export const metadata = {
-  title: 'Managed WordPress Hosting NZ | Fast & Secure WP Hosting',
-  description: 'Get fast, secure managed WordPress hosting in NZ with staging, cloning, SSD storage, backups, CDN, and 24/7 support. Choose your perfect WP hosting plan.',
-  openGraph: {
-    title: 'Managed WordPress Hosting NZ | Fast & Secure WP Hosting',
-    description: 'Get fast, secure managed WordPress hosting in NZ with staging, cloning, SSD storage, backups, CDN, and 24/7 support. Choose your perfect WP hosting plan.',
-    images: ['/images/hero/wordpress-hosting-hero.webp'],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Managed WordPress Hosting NZ | Fast & Secure WP Hosting',
-    description: 'Get fast, secure managed WordPress hosting in NZ with staging, cloning, SSD storage, backups, CDN, and 24/7 support. Choose your perfect WP hosting plan.',
-    images: ['/images/hero/wordpress-hosting-hero.webp'],
-  },
-};
+export async function generateMetadata() {
+  const seo = await getSeoMetadata('wordpress-hosting');
+  return {
+    title: seo.title,
+    description: seo.description,
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/hero/wordpress-hosting-hero.webp'],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/hero/wordpress-hosting-hero.webp'],
+    },
+  };
+}
 
-export default function WordpressHostingPage() {
-  return <WordpressHostingPageClient />;
+export default async function WordpressHostingPage() {
+  const pricingData = await getPricingPageData('wordpress_hosting');
+  return <WordpressHostingPageClient pricingData={pricingData} />;
 }

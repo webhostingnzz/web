@@ -1,22 +1,28 @@
 import VpsHostingPageClient from './VpsHostingPageClient';
+import { getSeoMetadata } from '../lib/getSeoMetadata';
+import { getCustomPricing } from '../lib/getCustomPricing';
 
-export const metadata = {
-  title: 'High-Performance VPS Hosting NZ | Fast SSD Virtual Servers',
-  description: 'Get lightning-fast SSD VPS hosting in NZ with instant deployment, unlimited bandwidth, anti-DDoS protection, and full root access. Choose your VPS plan today.',
-  openGraph: {
-    title: 'High-Performance VPS Hosting NZ | Fast SSD Virtual Servers',
-    description: 'Get lightning-fast SSD VPS hosting in NZ with instant deployment, unlimited bandwidth, anti-DDoS protection, and full root access. Choose your VPS plan today.',
-    images: ['/images/hero/vps-hosting-hero.webp'],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'High-Performance VPS Hosting NZ | Fast SSD Virtual Servers',
-    description: 'Get lightning-fast SSD VPS hosting in NZ with instant deployment, unlimited bandwidth, anti-DDoS protection, and full root access. Choose your VPS plan today.',
-    images: ['/images/hero/vps-hosting-hero.webp'],
-  },
-};
+export async function generateMetadata() {
+  const seo = await getSeoMetadata('vps-hosting');
+  return {
+    title: seo.title,
+    description: seo.description,
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/hero/vps-hosting-hero.webp'],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.title,
+      description: seo.description,
+      images: ['/images/hero/vps-hosting-hero.webp'],
+    },
+  };
+}
 
-export default function VpsHostingPage() {
-  return <VpsHostingPageClient />;
+export default async function VpsHostingPage() {
+  const vpsTiers = await getCustomPricing('vps');
+  return <VpsHostingPageClient vpsTiers={vpsTiers} />;
 }

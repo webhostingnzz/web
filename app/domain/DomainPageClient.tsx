@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
-import domainHtml from '../data/domain_html.json';
 import domainScripts from '../data/domain_scripts.json';
 
-export default function DomainPageClient() {
+export default function DomainPageClient({ domainHtml }: { domainHtml: string }) {
   useEffect(() => {
     let jqLoaded = false;
 

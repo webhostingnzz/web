@@ -11244,3 +11244,25 @@ h1.whnz-blog-index-title {
     transition: all 0.2s ease;
 }
 .whnz-blog-page-next:hover { background: #0CC0DF; }
+
+/* Smooth page transition — fades each page in on load/navigation to mask
+   the brief flash while a page's own scripts finish initializing. */
+.whnz-page-transition {
+    animation: whnzPageFadeIn 0.35s ease-out;
+}
+@keyframes whnzPageFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Smooth image pop-in sitewide — pure CSS, no JS, no extra network
+   requests, so this can never slow anything down. Combined with the
+   aspect-ratio reservations on hero images, this removes both the layout
+   jump AND the harsh instant-appear "glitch" when images finish loading. */
+img {
+    animation: whnzImgFadeIn 0.4s ease-out;
+}
+@keyframes whnzImgFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

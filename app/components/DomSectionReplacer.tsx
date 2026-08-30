@@ -26,9 +26,15 @@ export default function DomSectionReplacer({
     if (!target) return;
 
     target.style.display = 'none';
+    const originalId = target.id;
+    target.removeAttribute('id');
 
     const container = document.createElement('div');
-    container.id = `${targetId}-react-replacement`;
+    // Move the id onto the new visible container, so any existing
+    // "#pricing-sec" links (like the hero's "View Plans" button) still
+    // scroll to the right, now-visible place.
+    container.id = originalId;
+    container.style.scrollMarginTop = '100px';
     target.insertAdjacentElement('afterend', container);
     setPortalNode(container);
 
@@ -36,6 +42,7 @@ export default function DomSectionReplacer({
       // If this component ever unmounts, restore the original section
       // instead of leaving the page in a broken state.
       target.style.display = '';
+      target.id = originalId;
       container.remove();
     };
   }, [targetId]);

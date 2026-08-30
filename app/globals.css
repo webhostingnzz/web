@@ -11259,9 +11259,7 @@ h1.whnz-blog-index-title {
    requests, so this can never slow anything down. Combined with the
    aspect-ratio reservations on hero images, this removes both the layout
    jump AND the harsh instant-appear "glitch" when images finish loading. */
-img {
-    animation: whnzImgFadeIn 0.4s ease-out;
-}
+/* replaced with JS-driven, load-event-based fade-in in PageTransition.tsx */
 @keyframes whnzImgFadeIn {
     from { opacity: 0; }
     to { opacity: 1; }

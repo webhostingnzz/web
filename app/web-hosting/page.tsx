@@ -1,6 +1,8 @@
 import WebHostingPageClient from './WebHostingPageClient';
 import { getSeoMetadata } from '../lib/getSeoMetadata';
 import { getPricingPageData } from '../lib/getPricingPlans';
+import JsonLd from '../components/JsonLd';
+import { getProductSchema, getBreadcrumbSchema } from '../lib/structuredData';
 
 export async function generateMetadata() {
   const seo = await getSeoMetadata('web-hosting');
@@ -24,5 +26,14 @@ export async function generateMetadata() {
 
 export default async function WebHostingPage() {
   const pricingData = await getPricingPageData('web_hosting');
-  return <WebHostingPageClient pricingData={pricingData} />;
+  return (
+    <>
+      <JsonLd data={getProductSchema(pricingData.plans, '/web-hosting')} />
+      <JsonLd data={getBreadcrumbSchema([
+        { name: 'Home', path: '/' },
+        { name: 'Web Hosting', path: '/web-hosting' },
+      ])} />
+      <WebHostingPageClient pricingData={pricingData} />
+    </>
+  );
 }

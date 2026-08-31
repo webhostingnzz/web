@@ -1,6 +1,8 @@
 import WordpressHostingPageClient from './WordpressHostingPageClient';
 import { getSeoMetadata } from '../lib/getSeoMetadata';
 import { getPricingPageData } from '../lib/getPricingPlans';
+import JsonLd from '../components/JsonLd';
+import { getProductSchema, getBreadcrumbSchema } from '../lib/structuredData';
 
 export async function generateMetadata() {
   const seo = await getSeoMetadata('wordpress-hosting');
@@ -24,5 +26,14 @@ export async function generateMetadata() {
 
 export default async function WordpressHostingPage() {
   const pricingData = await getPricingPageData('wordpress_hosting');
-  return <WordpressHostingPageClient pricingData={pricingData} />;
+  return (
+    <>
+      <JsonLd data={getProductSchema(pricingData.plans, '/wordpress-hosting')} />
+      <JsonLd data={getBreadcrumbSchema([
+        { name: 'Home', path: '/' },
+        { name: 'WordPress Hosting', path: '/wordpress-hosting' },
+      ])} />
+      <WordpressHostingPageClient pricingData={pricingData} />
+    </>
+  );
 }

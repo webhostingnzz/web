@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import { getAllPosts, getPostBySlug } from '../lib/blogApi';
 import BlogPostClient from './BlogPostClient';
+import JsonLd from '../components/JsonLd';
+import { getArticleSchema, getBreadcrumbSchema } from '../lib/structuredData';
 
 // Re-check WordPress for new/edited posts periodically without a redeploy.
 export const revalidate = 3600;
@@ -38,5 +40,15 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
-  return <BlogPostClient post={post} />;
+  return (
+    <>
+      <JsonLd data={getArticleSchema(post)} />
+      <JsonLd data={getBreadcrumbSchema([
+        { name: 'Home', path: '/' },
+        { name: 'Blog', path: '/blog' },
+        { name: post.title, path: `/${post.slug}` },
+      ])} />
+      <BlogPostClient post={post} />
+    </>
+  );
 }

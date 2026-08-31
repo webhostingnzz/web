@@ -3,8 +3,7 @@ import Link from 'next/link';
 const cards = [
   { href: '/admin/orders', title: 'Web Design Orders', desc: 'View recent Stripe payments for Web Design Service packages.' },
   { href: '/admin/seo', title: 'SEO Settings', desc: 'Edit page titles and meta descriptions.' },
-  { href: '/admin/pricing', title: 'Pricing & Plans', desc: 'Edit prices and features shown across the site.' },
-  { href: '/admin/custom-pricing', title: 'VPS, Cloud, Web Design & Domain Pricing', desc: 'Edit VPS tiers, cloud server plans, Web Design packages, and domain TLD prices.' },
+  { href: '/admin/pricing', title: 'Pricing & Plans', desc: 'Edit every price on the site — hosting, VPS, cloud, web design, and domains.' },
 ];
 
 export default function AdminHomePage() {

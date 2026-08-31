@@ -8,7 +8,6 @@ const links = [
   { href: '/admin/orders', label: 'Web Design Orders' },
   { href: '/admin/seo', label: 'SEO' },
   { href: '/admin/pricing', label: 'Pricing' },
-  { href: '/admin/custom-pricing', label: 'VPS/Cloud/Domain' },
 ];
 
 export default function AdminNav() {

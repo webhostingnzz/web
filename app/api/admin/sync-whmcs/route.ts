@@ -69,13 +69,13 @@ export async function POST() {
   // --- Sync domain TLD pricing ---
   try {
     const tldPricing = await getWhmcsTldPricing();
-    const tldByName = new Map(tldPricing.map((t) => [t.tld.toLowerCase(), t]));
+    const tldByName = new Map(tldPricing.map((t) => [t.tld.replace(/^\./, '').toLowerCase(), t]));
     const { data: domains } = await supabase
       .from('custom_pricing_items')
       .select('id, item_name')
       .eq('category', 'domain_tld');
     for (const d of domains || []) {
-      const match = tldByName.get(d.item_name.toLowerCase());
+      const match = tldByName.get(d.item_name.replace(/^\./, '').toLowerCase());
       if (match && match.registerPrice !== null) {
         await supabase.from('custom_pricing_items').update({ price: match.registerPrice }).eq('id', d.id);
         results.domainsUpdated.push(`${d.item_name} → NZ$${match.registerPrice}`);

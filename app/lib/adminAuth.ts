@@ -79,29 +79,4 @@ export function checkCredentials(username: string, password: string): boolean {
   return usernameOk && passwordOk;
 }
 
-// TEMPORARY DIAGNOSTIC — same check as above, but also returns exactly
-// which field failed and (safely, as an index number only — never an
-// actual character) where the first mismatching character is. Remove
-// once login is confirmed working.
-export function checkCredentialsDebug(username: string, password: string) {
-  const adminUsername = process.env.ADMIN_USERNAME || '';
-  const adminPassword = process.env.ADMIN_PASSWORD || '';
-
-  function firstMismatchIndex(a: string, b: string): number {
-    const len = Math.min(a.length, b.length);
-    for (let i = 0; i < len; i++) {
-      if (a.charCodeAt(i) !== b.charCodeAt(i)) return i;
-    }
-    if (a.length !== b.length) return len; // mismatch is the length difference itself
-    return -1; // fully identical
-  }
-
-  return {
-    usernameOk: timingSafeEqual(username, adminUsername),
-    passwordOk: timingSafeEqual(password, adminPassword),
-    usernameFirstMismatchIndex: firstMismatchIndex(username, adminUsername),
-    passwordFirstMismatchIndex: firstMismatchIndex(password, adminPassword),
-  };
-}
-
 export const ADMIN_COOKIE_NAME = COOKIE_NAME;

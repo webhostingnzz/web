@@ -17,6 +17,14 @@ async function callWhmcsApi(action: string, params: Record<string, string> = {})
   const identifier = process.env.WHMCS_API_IDENTIFIER;
   const secret = process.env.WHMCS_API_SECRET;
 
+  // TEMPORARY DIAGNOSTIC — WHMCS_API_URL isn't a secret (it's just an
+  // endpoint address), so it's safe to log directly. JSON.stringify makes
+  // any hidden whitespace/control characters visible as escape sequences
+  // (e.g. a stray space would show as a literal space inside the quotes,
+  // a trailing newline would show as \n). Remove once this is fixed.
+  console.log('[whmcs-debug] raw WHMCS_API_URL from env:', JSON.stringify(apiUrl));
+  console.log('[whmcs-debug] length:', apiUrl ? apiUrl.length : 'undefined');
+
   if (!apiUrl || !identifier || !secret) {
     throw new Error('WHMCS API environment variables are not configured');
   }
@@ -80,6 +88,15 @@ export type WhmcsTldPrice = {
 export async function getWhmcsTldPricing(): Promise<WhmcsTldPrice[]> {
   const data = await callWhmcsApi('GetTLDPricing');
   const pricing = data?.pricing || {};
+
+  // TEMPORARY DIAGNOSTIC — this data isn't sensitive (just public TLD
+  // pricing structure), safe to log directly. Shows exactly what WHMCS
+  // returns so we can see the real currency key names, since "NZD" may
+  // not be the exact key WHMCS uses for your account. Remove once domain
+  // sync is confirmed working.
+  const entries = Object.entries(pricing);
+  console.log('[tld-debug] total TLDs returned:', entries.length);
+  console.log('[tld-debug] first 3 raw entries:', JSON.stringify(entries.slice(0, 3), null, 2));
 
   return Object.entries(pricing).map(([tld, info]: [string, any]) => {
     const registerPrice = info?.register?.NZD ? parseFloat(info.register.NZD) : null;

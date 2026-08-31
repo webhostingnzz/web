@@ -11,11 +11,17 @@ import navScripts from '../data/shared_nav_scripts.json';
 export default function BlogChrome({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let jqLoaded = false;
+    let cancelled = false;
 
+    // Deliberately no "already ran" persistent flag here: BlogChrome
+    // re-mounts fresh HTML (a new header/footer DOM) on every blog page
+    // navigation, including client-side <Link> navigation between the blog
+    // index and individual posts. A flag that only allows this to run once
+    // per browser session meant the SECOND blog page visited in a session
+    // got a nav bar with no working mobile menu or dropdown at all, since
+    // the script that wires those up never ran again for the new HTML.
     const tryRunScripts = () => {
-      if (!jqLoaded) return;
-      if ((window as any).__whnzBlogNavScriptsRan) return;
-      (window as any).__whnzBlogNavScriptsRan = true;
+      if (!jqLoaded || cancelled) return;
       try {
         // eslint-disable-next-line no-new-func
         const fn = new Function(navScripts as string);
@@ -31,6 +37,7 @@ export default function BlogChrome({ children }: { children: React.ReactNode }) 
     document.body.appendChild(jq);
 
     return () => {
+      cancelled = true;
       document.body.removeChild(jq);
     };
   }, []);

@@ -8,18 +8,12 @@ const links = [
   { href: '/admin/orders', label: 'Web Design Orders' },
   { href: '/admin/seo', label: 'SEO' },
   { href: '/admin/pricing', label: 'Pricing' },
+  { href: '/admin/custom-pricing', label: 'VPS/Cloud/Domain' },
 ];
 
 export default function AdminNav() {
   const pathname = usePathname();
   const router = useRouter();
-
-  // The login page shares this same layout (it's nested under /admin), but
-  // showing the nav bar there — before you're even authenticated — doesn't
-  // make sense, so skip rendering entirely on that one route.
-  if (pathname === '/admin/login' || pathname === '/admin/login/') {
-    return null;
-  }
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });

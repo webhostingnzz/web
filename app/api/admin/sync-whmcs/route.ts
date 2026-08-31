@@ -6,6 +6,27 @@ function normalize(name: string): string {
   return name.trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
+// WHMCS names these products more verbosely than what's actually shown on
+// the site (e.g. WHMCS: "Webhosting NZ Micro Server" vs. displayed: "Micro"
+// — the site's table is already titled "Webhosting NZ", so repeating it in
+// every row would be redundant). Rather than rename what's displayed on the
+// live site, we strip the known prefix/suffix words from the WHMCS side
+// before comparing, per category.
+const CATEGORY_STRIP: Record<string, { prefix?: string; suffix?: string }> = {
+  vps: { suffix: ' vps' },
+  cloud_servers_webhosting_nz: { prefix: 'webhosting nz ', suffix: ' server' },
+  cloud_servers_aws: { prefix: 'aws ', suffix: ' server' },
+  cloud_servers_gcp: { prefix: 'gcp ', suffix: ' server' },
+};
+
+function canonicalForCategory(whmcsProductName: string, category: string): string {
+  let n = normalize(whmcsProductName);
+  const strip = CATEGORY_STRIP[category];
+  if (strip?.prefix && n.startsWith(strip.prefix)) n = n.slice(strip.prefix.length);
+  if (strip?.suffix && n.endsWith(strip.suffix)) n = n.slice(0, -strip.suffix.length);
+  return n.trim();
+}
+
 export async function POST() {
   const supabase = getSupabaseAdmin();
   const results = {
@@ -48,12 +69,25 @@ export async function POST() {
       .select('id, item_name, category')
       .neq('category', 'web_design')
       .neq('category', 'domain_tld');
+
+    // Build a category-aware lookup: for each product, compute its
+    // canonical (stripped) name under every category that has a strip
+    // rule, so "Webhosting NZ Micro Server" becomes findable as "micro"
+    // specifically when checking cloud_servers_webhosting_nz items.
+    const categoryProductMaps: Record<string, Map<string, typeof whmcsProducts[number]>> = {};
+    for (const category of Object.keys(CATEGORY_STRIP)) {
+      categoryProductMaps[category] = new Map(
+        whmcsProducts.map((p) => [canonicalForCategory(p.name, category), p])
+      );
+    }
+
     for (const item of items || []) {
-      const match = productByName.get(normalize(item.item_name));
+      const categoryMap = categoryProductMaps[item.category];
+      const match = categoryMap ? categoryMap.get(normalize(item.item_name)) : productByName.get(normalize(item.item_name));
       if (match && match.monthlyPrice !== null) {
         await supabase.from('custom_pricing_items').update({ price: match.monthlyPrice }).eq('id', item.id);
         results.customItemsUpdated.push(`${item.item_name} (${item.category}) → NZ$${match.monthlyPrice}`);
-        matchedNames.add(normalize(item.item_name));
+        matchedNames.add(normalize(match.name));
       }
     }
   } catch (err: any) {

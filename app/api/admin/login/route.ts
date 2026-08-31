@@ -1,19 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkCredentials, createSessionToken, ADMIN_COOKIE_NAME } from '../../../lib/adminAuth';
+import { checkCredentials, checkCredentialsDebug, createSessionToken, ADMIN_COOKIE_NAME } from '../../../lib/adminAuth';
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const username = body?.username;
   const password = body?.password;
 
-  // TEMPORARY DIAGNOSTIC — logs only character LENGTHS, never the actual
-  // values, to help pinpoint a whitespace/typo mismatch without exposing
-  // any secrets. Safe to check in Hostinger's Runtime Logs. Remove this
-  // block once login is confirmed working.
-  console.log('[login-debug] submitted username length:', typeof username === 'string' ? username.length : 'not a string');
-  console.log('[login-debug] submitted password length:', typeof password === 'string' ? password.length : 'not a string');
-  console.log('[login-debug] env ADMIN_USERNAME length:', (process.env.ADMIN_USERNAME || '').length, '| is set:', !!process.env.ADMIN_USERNAME);
-  console.log('[login-debug] env ADMIN_PASSWORD length:', (process.env.ADMIN_PASSWORD || '').length, '| is set:', !!process.env.ADMIN_PASSWORD);
+  // TEMPORARY DIAGNOSTIC — logs only lengths and mismatch INDEX numbers,
+  // never actual values, to pinpoint exactly where the comparison fails.
+  // Remove this block once login is confirmed working.
+  if (typeof username === 'string' && typeof password === 'string') {
+    const debug = checkCredentialsDebug(username, password);
+    console.log('[login-debug]', JSON.stringify({
+      submittedUsernameLength: username.length,
+      submittedPasswordLength: password.length,
+      envUsernameLength: (process.env.ADMIN_USERNAME || '').length,
+      envPasswordLength: (process.env.ADMIN_PASSWORD || '').length,
+      ...debug,
+    }));
+  }
 
   if (typeof username !== 'string' || typeof password !== 'string' || !checkCredentials(username, password)) {
     return NextResponse.json({ error: 'Incorrect username or password' }, { status: 401 });

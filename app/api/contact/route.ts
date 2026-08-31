@@ -1,32 +1,80 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkCredentials, createSessionToken, ADMIN_COOKIE_NAME } from '../../../lib/adminAuth';
+import nodemailer from 'nodemailer';
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 export async function POST(request: NextRequest) {
-  const body = await request.json().catch(() => ({}));
-  const username = body?.username;
-  const password = body?.password;
+  try {
+    const body = await request.json();
+    const name = String(body?.name || '').trim();
+    const email = String(body?.email || '').trim();
+    const subject = String(body?.subject || '').trim();
+    const message = String(body?.message || '').trim();
 
-  // TEMPORARY DIAGNOSTIC — logs only character LENGTHS, never the actual
-  // values, to help pinpoint a whitespace/typo mismatch without exposing
-  // any secrets. Safe to check in Hostinger's Runtime Logs. Remove this
-  // block once login is confirmed working.
-  console.log('[login-debug] submitted username length:', typeof username === 'string' ? username.length : 'not a string');
-  console.log('[login-debug] submitted password length:', typeof password === 'string' ? password.length : 'not a string');
-  console.log('[login-debug] env ADMIN_USERNAME length:', (process.env.ADMIN_USERNAME || '').length, '| is set:', !!process.env.ADMIN_USERNAME);
-  console.log('[login-debug] env ADMIN_PASSWORD length:', (process.env.ADMIN_PASSWORD || '').length, '| is set:', !!process.env.ADMIN_PASSWORD);
+    if (!name || !email || !subject || !message) {
+      return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
+    }
 
-  if (typeof username !== 'string' || typeof password !== 'string' || !checkCredentials(username, password)) {
-    return NextResponse.json({ error: 'Incorrect username or password' }, { status: 401 });
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 });
+    }
+
+    const smtpHost = process.env.SMTP_HOST?.trim();
+    const smtpPort = process.env.SMTP_PORT?.trim();
+    const smtpUser = process.env.SMTP_USER?.trim();
+    const smtpPassword = process.env.SMTP_PASSWORD?.trim();
+
+    if (!smtpHost || !smtpPort || !smtpUser || !smtpPassword) {
+      console.error('Contact form error: SMTP environment variables are not fully configured');
+      return NextResponse.json({ error: 'Something went wrong. Please try again later.' }, { status: 500 });
+    }
+
+    // Diagnostic only — logs lengths and first/last characters, never the
+    // actual password value, so we can spot a whitespace/truncation issue
+    // in the stored environment variable without exposing the secret.
+    console.log('Contact form SMTP diagnostic:', {
+      host: smtpHost,
+      port: smtpPort,
+      userLength: smtpUser.length,
+      userPreview: smtpUser,
+      passwordLength: smtpPassword.length,
+      passwordFirstChar: smtpPassword[0],
+      passwordLastChar: smtpPassword[smtpPassword.length - 1],
+    });
+
+    const port = parseInt(smtpPort, 10);
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port,
+      secure: port === 465,
+      auth: { user: smtpUser, pass: smtpPassword },
+    });
+
+    await transporter.sendMail({
+      from: `"Webhosting NZ Contact Form" <${smtpUser}>`,
+      to: 'admin@webhosting.co.nz',
+      replyTo: email,
+      subject: `Contact form: ${subject}`,
+      html: `
+        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Subject:</strong> ${escapeHtml(subject)}</p>
+        <p><strong>Message:</strong></p>
+        <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
+      `,
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (err: any) {
+    console.error('Contact form error:', err);
+    return NextResponse.json({ error: 'Something went wrong. Please try again later.' }, { status: 500 });
   }
-
-  const token = await createSessionToken();
-  const response = NextResponse.json({ ok: true });
-  response.cookies.set(ADMIN_COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 12,
-  });
-  return response;
 }

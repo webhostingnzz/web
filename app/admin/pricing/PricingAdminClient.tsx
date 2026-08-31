@@ -39,18 +39,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   domain_tld: 'Domain Pricing',
 };
 
-// Categories that are safe to auto-sync from WHMCS (matched by product
-// name). Web Design isn't matched against any WHMCS product, so its
-// prices always stay whatever you set manually here — never overwritten
-// by a sync.
-const AUTO_SYNCED_CATEGORIES = new Set([
-  'vps',
-  'cloud_servers_webhosting_nz',
-  'cloud_servers_aws',
-  'cloud_servers_gcp',
-  'domain_tld',
-]);
-
 export default function PricingAdminClient() {
   const [plans, setPlans] = useState<Plan[] | null>(null);
   const [items, setItems] = useState<CustomItem[] | null>(null);
@@ -59,23 +47,6 @@ export default function PricingAdminClient() {
   const [draft, setDraft] = useState<any>({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [syncing, setSyncing] = useState(false);
-  const [syncResult, setSyncResult] = useState<any>(null);
-
-  const syncFromWhmcs = async () => {
-    setSyncing(true);
-    setSyncResult(null);
-    try {
-      const res = await fetch('/api/admin/sync-whmcs', { method: 'POST' });
-      const data = await res.json();
-      setSyncResult(data);
-      if (!data.error) load();
-    } catch {
-      setSyncResult({ error: 'Failed to reach the sync endpoint.' });
-    } finally {
-      setSyncing(false);
-    }
-  };
 
   const load = () => {
     Promise.all([
@@ -186,50 +157,9 @@ export default function PricingAdminClient() {
       <h1 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 28, color: '#0b1220', margin: '0 0 8px' }}>
         Pricing & Plans
       </h1>
-      <p style={{ color: 'rgba(11,18,32,0.6)', fontSize: 15, margin: '0 0 20px' }}>
+      <p style={{ color: 'rgba(11,18,32,0.6)', fontSize: 15, margin: '0 0 24px' }}>
         Edit every price on the site — hosting plans, VPS, cloud servers, web design, and domains — all in one place. Changes appear on the site within a minute or two.
       </p>
-
-      <button onClick={syncFromWhmcs} disabled={syncing} style={{
-        padding: '10px 20px', borderRadius: 10, border: 'none', background: '#0b1220',
-        color: '#fff', fontSize: 13.5, fontWeight: 700, cursor: syncing ? 'default' : 'pointer',
-        opacity: syncing ? 0.7 : 1, marginBottom: 8,
-      }}>
-        {syncing ? 'Syncing…' : 'Sync Prices from WHMCS'}
-      </button>
-      <p style={{ color: 'rgba(11,18,32,0.45)', fontSize: 12.5, margin: '0 0 20px' }}>
-        Only updates items already listed below, matched by name against your WHMCS products — never imports new products, and never touches Order Links (those stay exactly as you've set them). Web Design pricing isn't matched to anything in WHMCS, so it's always safe to set manually and a sync will never overwrite it.
-      </p>
-
-      {syncResult && (
-        <div style={{ background: '#fff', border: '1px solid rgba(11,18,32,0.08)', borderRadius: 12, padding: '16px 20px', marginBottom: 24, fontSize: 13 }}>
-          {syncResult.error ? (
-            <p style={{ color: '#e11d48', margin: 0 }}>{syncResult.error}</p>
-          ) : (
-            <>
-              <p style={{ fontWeight: 700, margin: '0 0 8px', color: '#0b1220' }}>
-                Updated {syncResult.pricingPlansUpdated.length + syncResult.customItemsUpdated.length + syncResult.domainsUpdated.length} item(s)
-              </p>
-              {[...syncResult.pricingPlansUpdated, ...syncResult.customItemsUpdated, ...syncResult.domainsUpdated].map((line: string, i: number) => (
-                <div key={i} style={{ color: 'rgba(11,18,32,0.7)' }}>{line}</div>
-              ))}
-              {syncResult.unmatchedWhmcsProducts?.length > 0 && (
-                <details style={{ marginTop: 10 }}>
-                  <summary style={{ cursor: 'pointer', color: 'rgba(11,18,32,0.5)' }}>
-                    {syncResult.unmatchedWhmcsProducts.length} WHMCS product(s) didn't match anything on the site
-                  </summary>
-                  <div style={{ marginTop: 6, color: 'rgba(11,18,32,0.5)' }}>
-                    {syncResult.unmatchedWhmcsProducts.join(', ')}
-                  </div>
-                </details>
-              )}
-              {syncResult.errors?.length > 0 && (
-                <div style={{ color: '#e11d48', marginTop: 10 }}>{syncResult.errors.join(' | ')}</div>
-              )}
-            </>
-          )}
-        </div>
-      )}
 
       {error && <p style={{ color: '#e11d48' }}>{error}</p>}
       {(!plans || !items) && !error && <p style={{ color: 'rgba(11,18,32,0.6)' }}>Loading…</p>}
@@ -297,12 +227,9 @@ export default function PricingAdminClient() {
       {/* --- VPS, Cloud Servers, Web Design, Domains --- */}
       {groupedItems && Object.entries(groupedItems).map(([category, catItems]) => (
         <div key={category} style={{ marginBottom: 32 }}>
-          <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 17, color: '#0b1220', margin: '0 0 4px' }}>
+          <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 17, color: '#0b1220', margin: '0 0 12px' }}>
             {CATEGORY_LABELS[category] || category}
           </h2>
-          <p style={{ fontSize: 12, color: 'rgba(11,18,32,0.45)', margin: '0 0 12px' }}>
-            {AUTO_SYNCED_CATEGORIES.has(category) ? 'Prices here can be auto-updated by "Sync Prices from WHMCS" above.' : 'Not matched to WHMCS — prices here only change when you edit them manually.'}
-          </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {catItems.map((item) => (
               <div key={item.id} style={{ background: '#fff', border: '1px solid rgba(11,18,32,0.08)', borderRadius: 14, padding: '16px 20px' }}>

@@ -1,6 +1,22 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getSupabaseAdmin } from '../../../lib/supabase';
 import { getWhmcsProducts, getWhmcsTldPricing } from '../../../lib/whmcsApi';
+
+const PAGE_TO_ROUTE: Record<string, string> = {
+  web_hosting: '/web-hosting',
+  wordpress_hosting: '/wordpress-hosting',
+  website_builder_hosting: '/website-builder-hosting',
+};
+
+const CATEGORY_TO_ROUTE: Record<string, string> = {
+  vps: '/vps-hosting',
+  cloud_servers_webhosting_nz: '/cloud-servers',
+  cloud_servers_aws: '/cloud-servers',
+  cloud_servers_gcp: '/cloud-servers',
+  web_design: '/web-design-service',
+  domain_tld: '/domain',
+};
 
 function normalize(name: string): string {
   return name.trim().toLowerCase().replace(/\s+/g, ' ');
@@ -37,6 +53,11 @@ export async function POST() {
     errors: [] as string[],
   };
 
+  // Every route that changed during this sync — refreshed all at once at
+  // the end, so a page that had multiple updates only gets revalidated
+  // once rather than repeatedly.
+  const routesToRevalidate = new Set<string>();
+
   // --- Sync named plans (Web Hosting / WordPress / Website Builder) ---
   let whmcsProducts: Awaited<ReturnType<typeof getWhmcsProducts>> = [];
   try {
@@ -49,13 +70,14 @@ export async function POST() {
   const matchedNames = new Set<string>();
 
   try {
-    const { data: plans } = await supabase.from('pricing_plans').select('id, plan_name');
+    const { data: plans } = await supabase.from('pricing_plans').select('id, plan_name, page');
     for (const plan of plans || []) {
       const match = productByName.get(normalize(plan.plan_name));
       if (match && match.monthlyPrice !== null) {
         await supabase.from('pricing_plans').update({ monthly_price: match.monthlyPrice }).eq('id', plan.id);
         results.pricingPlansUpdated.push(`${plan.plan_name} → NZ$${match.monthlyPrice}`);
         matchedNames.add(normalize(plan.plan_name));
+        if (PAGE_TO_ROUTE[plan.page]) routesToRevalidate.add(PAGE_TO_ROUTE[plan.page]);
       }
     }
   } catch (err: any) {
@@ -88,6 +110,7 @@ export async function POST() {
         await supabase.from('custom_pricing_items').update({ price: match.monthlyPrice }).eq('id', item.id);
         results.customItemsUpdated.push(`${item.item_name} (${item.category}) → NZ$${match.monthlyPrice}`);
         matchedNames.add(normalize(match.name));
+        if (CATEGORY_TO_ROUTE[item.category]) routesToRevalidate.add(CATEGORY_TO_ROUTE[item.category]);
       }
     }
   } catch (err: any) {
@@ -113,10 +136,15 @@ export async function POST() {
       if (match && match.registerPrice !== null) {
         await supabase.from('custom_pricing_items').update({ price: match.registerPrice }).eq('id', d.id);
         results.domainsUpdated.push(`${d.item_name} → NZ$${match.registerPrice}`);
+        routesToRevalidate.add('/domain');
       }
     }
   } catch (err: any) {
     results.errors.push(`Domain TLD sync error: ${err.message}`);
+  }
+
+  for (const route of routesToRevalidate) {
+    revalidatePath(route);
   }
 
   return NextResponse.json(results);

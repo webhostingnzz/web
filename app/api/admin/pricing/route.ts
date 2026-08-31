@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getSupabaseAdmin } from '../../../lib/supabase';
+
+// Maps each pricing_plans "page" value to the actual site route that
+// displays it, so a save can immediately refresh the right cached page
+// instead of waiting for the next full deploy.
+const PAGE_TO_ROUTE: Record<string, string> = {
+  web_hosting: '/web-hosting',
+  wordpress_hosting: '/wordpress-hosting',
+  website_builder_hosting: '/website-builder-hosting',
+};
 
 export async function GET() {
   try {
@@ -25,12 +35,18 @@ export async function PUT(request: NextRequest) {
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
     const supabase = getSupabaseAdmin();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('pricing_plans')
       .update({ plan_name, monthly_price, features, order_link, image_url })
-      .eq('id', id);
+      .eq('id', id)
+      .select('page')
+      .single();
 
     if (error) throw error;
+
+    const route = data?.page ? PAGE_TO_ROUTE[data.page] : undefined;
+    if (route) revalidatePath(route);
+
     return NextResponse.json({ ok: true });
   } catch (err: any) {
     console.error('Pricing update error:', err);

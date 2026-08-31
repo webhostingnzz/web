@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getSupabaseAdmin } from '../../../lib/supabase';
 import { SEO_PAGES } from '../../../lib/seoPages';
 
@@ -41,6 +42,10 @@ export async function PUT(request: NextRequest) {
       .upsert({ page_slug: slug, meta_title: title, meta_description: description }, { onConflict: 'page_slug' });
 
     if (error) throw error;
+
+    const pageDef = SEO_PAGES.find((p) => p.slug === slug);
+    if (pageDef) revalidatePath(pageDef.route);
+
     return NextResponse.json({ ok: true });
   } catch (err: any) {
     console.error('SEO update error:', err);

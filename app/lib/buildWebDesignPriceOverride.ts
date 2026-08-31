@@ -14,7 +14,14 @@ export function applyWebDesignPriceOverride(html: string, tiers: CustomPricingIt
     const pattern = new RegExp(
       `(<h3>${tier.item_name}</h3>\\s*<div class="price">)\\$[0-9]+(<span> NZD</span></div>)`
     );
-    result = result.replace(pattern, `$1$${priceInt}$2`);
+    // IMPORTANT: use a replacement FUNCTION, not a replacement string.
+    // A string like `$1$${priceInt}$2` gets re-parsed by the regex engine
+    // itself — "$" followed by digits is special replacement syntax
+    // (backreferences), so digits from the price number can accidentally
+    // be swallowed as fake group references, corrupting the output (e.g.
+    // 119 silently became 19). A function's return value is inserted
+    // literally with no such reinterpretation.
+    result = result.replace(pattern, (_match, before, after) => `${before}$${priceInt}${after}`);
   }
   return result;
 }

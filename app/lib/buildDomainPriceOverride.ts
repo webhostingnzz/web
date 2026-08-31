@@ -14,13 +14,21 @@ export function applyDomainPriceOverride(html: string, tlds: CustomPricingItem[]
       `(<p>${escapedTld}</p>[\\s\\S]{0,500}?<p class="elementor-heading-title[^"]*">NZ\\$\\s*)[0-9.]+(/\\s*yr</p>[\\s\\S]{0,500}?<p>Previously\\s*)[0-9.]+(</p>)`
     );
     if (tld.original_price !== null) {
-      result = result.replace(pattern, `$1${tld.price.toFixed(2)}$2${tld.original_price.toFixed(2)}$3`);
+      // Use a replacement FUNCTION, not a replacement string — a string
+      // like `$1${price}$2${original}$3` gets re-parsed by the regex
+      // engine's own "$" + digits backreference syntax, which can
+      // silently corrupt the output if the interpolated digits happen to
+      // form what looks like another group reference. A function's
+      // return value is inserted literally, with no such risk.
+      result = result.replace(pattern, (_m, before, between, after) =>
+        `${before}${tld.price.toFixed(2)}${between}${tld.original_price!.toFixed(2)}${after}`
+      );
     } else {
       // No "was" price for this TLD — only replace the current price
       const simplePattern = new RegExp(
         `(<p>${escapedTld}</p>[\\s\\S]{0,500}?<p class="elementor-heading-title[^"]*">NZ\\$\\s*)[0-9.]+(/\\s*yr</p>)`
       );
-      result = result.replace(simplePattern, `$1${tld.price.toFixed(2)}$2`);
+      result = result.replace(simplePattern, (_m, before, after) => `${before}${tld.price.toFixed(2)}${after}`);
     }
   }
   return result;

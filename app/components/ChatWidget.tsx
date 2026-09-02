@@ -140,6 +140,19 @@ export default function ChatWidget() {
         body: JSON.stringify({ sessionId }),
       });
       const data = await res.json();
+
+      if (!res.ok || data.error) {
+        // Previously this branch didn't exist — the widget always showed
+        // "You're now connected" even when the WhatsApp notification
+        // failed to send behind the scenes, so a real failure looked
+        // identical to success from the visitor's side.
+        setMessages((prev) => [
+          ...prev,
+          { id: `local-${Date.now()}-he`, sender: 'ai', content: data.error || "Sorry, live chat isn't available right now. Please try again in a moment.", created_at: new Date().toISOString() },
+        ]);
+        return;
+      }
+
       if (data.sessionId) setSessionId(data.sessionId);
       setMode('handoff');
       setMessages((prev) => [

@@ -82,6 +82,14 @@ export default function ChatWidget() {
           ...prev,
           { id: `local-${Date.now()}-r`, sender: 'ai', content: data.reply, created_at: new Date().toISOString() },
         ]);
+      } else {
+        // The request succeeded but returned an error (e.g. missing
+        // database tables, missing API key) — previously this failed
+        // completely silently, showing nothing at all.
+        setMessages((prev) => [
+          ...prev,
+          { id: `local-${Date.now()}-err`, sender: 'ai', content: data.error || "Sorry, something went wrong. Please try again, or click 'Talk to a human' below.", created_at: new Date().toISOString() },
+        ]);
       }
     } catch {
       setMessages((prev) => [

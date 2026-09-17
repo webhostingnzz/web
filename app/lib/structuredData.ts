@@ -33,7 +33,7 @@ export function getOrganizationSchema() {
     sameAs: [
       'https://www.facebook.com/webhostingnewzealand',
       'https://x.com/webhostingnzx',
-      'https://www.instagram.com/webhostingnz/',
+      'https://www.instagram.com/webhostingnzz/',
     ],
   };
 }

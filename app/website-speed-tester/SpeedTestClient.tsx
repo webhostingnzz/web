@@ -168,8 +168,8 @@ export default function SpeedTestClient() {
         <section className={s.hero}>
           <div className={`${s.wrap} ${s.heroInner}`}>
             <p className={s.eyebrow}>Free NZ Website Speed Tester</p>
-            <h1 className={s.h1}>Find out why your website is slow <span>Make it faster.</span></h1>
-            <p className={s.lead}>Check your website&apos;s speed from a New Zealand point of view and get practical ways to improve performance.</p>
+            <h1 className={s.h1}>How fast is your website for Kiwi visitors? <span>Test it free in seconds.</span></h1>
+            <p className={s.lead}>Get your speed grade, Core Web Vitals and where your site is hosted, plus clear fixes to speed it up for customers in New Zealand.</p>
             <SpeedTestForm />
           </div>
         </section>

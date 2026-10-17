@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     description,
     // Individual results are for sharing; the tool page is what should rank.
     robots: { index: false, follow: true },
-    alternates: { canonical: `/speed-test/r/${r.id}/` },
-    openGraph: { title, description, type: 'website', url: `/speed-test/r/${r.id}/` },
+    alternates: { canonical: `/website-speed-tester/r/${r.id}/` },
+    openGraph: { title, description, type: 'website', url: `/website-speed-tester/r/${r.id}/` },
     twitter: { card: 'summary_large_image', title, description },
   };
 }

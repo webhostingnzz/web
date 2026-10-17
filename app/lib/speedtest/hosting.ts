@@ -97,7 +97,7 @@ async function fetchHeaders(url: string): Promise<Headers | null> {
       redirect: 'manual',
       signal: AbortSignal.timeout(8000),
       cache: 'no-store',
-      headers: { 'user-agent': 'Mozilla/5.0 (compatible; WebhostingNZ-SpeedTest/1.0; +https://webhosting.co.nz/speed-test/)' },
+      headers: { 'user-agent': 'Mozilla/5.0 (compatible; WebhostingNZ-SpeedTest/1.0; +https://webhosting.co.nz/website-speed-tester/)' },
     });
     res.body?.cancel().catch(() => {});
     return res.headers;

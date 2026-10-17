@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import BlogChrome from '../lib/BlogChrome';
-import ResultView, { usePollResult } from './ResultView';
+import ResultView, { DesktopIcon, Globe, MobileIcon, usePollResult } from './ResultView';
 import { SPEED_TEST_FAQ } from './faq';
 import s from './speedtest.module.css';
 
@@ -49,7 +49,7 @@ export function SpeedTestForm({ compact = false }: { compact?: boolean }) {
 
   useEffect(() => {
     if (result?.status === 'done') {
-      window.history.replaceState(null, '', `/speed-test/r/${result.id}/`);
+      window.history.replaceState(null, '', `/website-speed-tester/r/${result.id}/`);
     }
   }, [result]);
 
@@ -107,8 +107,8 @@ export function SpeedTestForm({ compact = false }: { compact?: boolean }) {
           <div className={s.device}>
             <strong>Show results for:</strong>
             <div className={s.toggle}>
-              <button type="button" aria-pressed={device === 'desktop'} onClick={() => setDevice('desktop')}>🖥️ Desktop</button>
-              <button type="button" aria-pressed={device === 'mobile'} onClick={() => setDevice('mobile')}>📱 Mobile</button>
+              <button type="button" aria-pressed={device === 'desktop'} onClick={() => setDevice('desktop')}><DesktopIcon /> Desktop</button>
+              <button type="button" aria-pressed={device === 'mobile'} onClick={() => setDevice('mobile')}><MobileIcon /> Mobile</button>
             </div>
           </div>
           <span>Free to use · No sign-up required</span>
@@ -167,6 +167,7 @@ export default function SpeedTestClient() {
       <div className={s.page}>
         <section className={s.hero}>
           <div className={`${s.wrap} ${s.heroInner}`}>
+            <p className={s.eyebrow}>Free NZ Website Speed Tester</p>
             <h1 className={s.h1}>Find out why your website is slow <span>Make it faster.</span></h1>
             <p className={s.lead}>Check your website&apos;s speed from a New Zealand point of view and get practical ways to improve performance.</p>
             <SpeedTestForm />
@@ -226,6 +227,77 @@ export default function SpeedTestClient() {
             </div>
             <div className={s.illustration}><ChecklistArt /></div>
           </div>
+        </section>
+
+        <section className={s.section}>
+          <div className={s.wrap}>
+            <h2 className={`${s.h2} ${s.center}`}>Why website speed matters for NZ businesses</h2>
+            <p className={`${s.sub} ${s.center}`}>A slow site costs you rankings, enquiries and sales. Here&apos;s what a faster site gets you.</p>
+            <div className={s.why}>
+              <div className={s.whyCard}>
+                <div className={s.whyIcon}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8" /><path d="M14 7h7v7" /></svg>
+                </div>
+                <h3>Better Google rankings</h3>
+                <p>Google uses Core Web Vitals as a ranking signal. Faster pages give you an edge over slower competitors in New Zealand search results.</p>
+              </div>
+              <div className={s.whyCard}>
+                <div className={s.whyIcon}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L22 7H6" /></svg>
+                </div>
+                <h3>More enquiries and sales</h3>
+                <p>Every extra second of loading makes visitors more likely to leave, especially on mobile. A fast site keeps people around long enough to call, book or buy.</p>
+              </div>
+              <div className={s.whyCard}>
+                <div className={s.whyIcon}><Globe mode="pin" size={40} /></div>
+                <h3>Hosting close to your customers</h3>
+                <p>Most Kiwi websites serve visitors in New Zealand. If the server is in the US or Europe, every request travels over 10,000 km, adding delay before anything appears.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={`${s.section} ${s.sectionSoft}`}>
+          <article className={`${s.wrap} ${s.prose}`}>
+            <h2>What our website speed tester checks</h2>
+            <p>
+              The Webhosting NZ website speed tester runs Google PageSpeed Insights (Lighthouse) on both mobile and desktop, then adds
+              something most speed tests leave out: where your website is hosted and how far that is from your visitors in New Zealand.
+              You get an A to F grade, your Core Web Vitals, and a short list of fixes written in plain English.
+            </p>
+            <h3>Core Web Vitals explained</h3>
+            <div className={s.tableWrap}>
+              <table className={s.vitals}>
+                <thead>
+                  <tr><th>Metric</th><th>What it measures</th><th>Good</th><th>Poor</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Largest Contentful Paint (LCP)</td><td>How long until the main content is visible</td><td>2.5 s or less</td><td>over 4 s</td></tr>
+                  <tr><td>Interaction to Next Paint (INP)</td><td>How quickly the page reacts to taps and clicks</td><td>200 ms or less</td><td>over 500 ms</td></tr>
+                  <tr><td>Cumulative Layout Shift (CLS)</td><td>How much the page jumps around while loading</td><td>0.1 or less</td><td>over 0.25</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <h3>How your grade is calculated</h3>
+            <p>
+              Your grade combines the Google performance scores for mobile (60%) and desktop (40%). Mobile counts for more because most
+              New Zealanders browse on their phones. A is 90 or above, B is 75 to 89, C is 60 to 74, D is 45 to 59, and anything lower is F.
+            </p>
+            <h3>Why hosting location matters in New Zealand</h3>
+            <p>
+              New Zealand is a long way from the big hosting hubs. A server in Singapore is about 8,400 km from Auckland, and one in the
+              United States is more than 10,000 km away. Each round trip adds delay, and a page needs several before it shows. Hosting in
+              New Zealand, or using a CDN with local edge locations, keeps that trip short. Compare our{' '}
+              <a href="/web-hosting/">NZ web hosting</a> and <a href="/wordpress-hosting/">WordPress hosting</a> plans if your site is hosted overseas.
+            </p>
+            <h3>How to make your website faster</h3>
+            <p>
+              Start with the fixes at the top of your results. The most common wins are compressing images, removing unused plugins and
+              scripts, turning on page caching and choosing hosting close to your visitors. If you would rather have it done for you, our{' '}
+              <a href="/web-design-service/">web design team</a> builds fast, lightweight sites for New Zealand businesses, and our{' '}
+              <a href="/blog/">blog</a> has more guides on hosting and performance.
+            </p>
+          </article>
         </section>
 
         <section className={s.section}>

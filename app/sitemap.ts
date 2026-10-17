@@ -17,7 +17,7 @@ const STATIC_ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[numb
   { path: '/business-email-hosting', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/web-design-service', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/free-google-review-qr-code-generator', changeFrequency: 'monthly', priority: 0.6 },
-  { path: '/speed-test', changeFrequency: 'monthly', priority: 0.7 },
+  { path: '/website-speed-tester', changeFrequency: 'monthly', priority: 0.7 },
   { path: '/blog', changeFrequency: 'daily', priority: 0.8 },
   { path: '/about', changeFrequency: 'monthly', priority: 0.5 },
   { path: '/contact', changeFrequency: 'monthly', priority: 0.5 },

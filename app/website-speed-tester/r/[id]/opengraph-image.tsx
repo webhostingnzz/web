@@ -33,7 +33,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
             {where && <div style={{ fontSize: 30, color: '#94a3b8', display: 'flex' }}>{where}</div>}
           </div>
         </div>
-        <div style={{ display: 'flex', fontSize: 28, color: '#94a3b8' }}>Test your site free at webhosting.co.nz/speed-test</div>
+        <div style={{ display: 'flex', fontSize: 28, color: '#94a3b8' }}>Test your site free at webhosting.co.nz/website-speed-tester</div>
       </div>
     ),
     size,

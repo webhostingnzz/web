@@ -30,6 +30,7 @@ const THRESHOLDS: Record<string, [number, number]> = {
   inp: [200, 500],
   tbt: [200, 600],
   fcp: [1800, 3000],
+  si: [3400, 5800],
   ttfb: [800, 1800],
   score: [90, 50],
 };

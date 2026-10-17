@@ -14,6 +14,10 @@ const nextConfig = {
         destination: 'https://webhosting.co.nz/:path*',
         permanent: true,
       },
+      // The speed test launched at /speed-test before moving to its
+      // keyword URL; keep old links, shared results and badges working.
+      { source: '/speed-test', destination: '/website-speed-tester/', permanent: true },
+      { source: '/speed-test/:path*', destination: '/website-speed-tester/:path*', permanent: true },
     ];
   },
 };

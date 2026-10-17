@@ -29,7 +29,7 @@ function badgeSvg(grade: string | null, host: string | null) {
 </svg>`;
 }
 
-// /speed-test/badge/<id>.svg — the embeddable badge for a result.
+// /website-speed-tester/badge/<id>.svg — the embeddable badge for a result.
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: raw } = await params;
   const id = raw.replace(/\.svg$/i, '');

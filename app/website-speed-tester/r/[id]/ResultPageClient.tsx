@@ -30,7 +30,7 @@ export default function ResultPageClient({ initial }: { initial: PublicResult })
         <section className={s.section} style={{ paddingTop: 30 }}>
           <div className={s.wrap} style={{ textAlign: 'center' }}>
             <h2 className={s.h2}>Test another website</h2>
-            <p className={s.sub} style={{ marginBottom: 24 }}>Free NZ Website Speed Test from <a href="/speed-test/" style={{ color: '#09a6c1' }}>Webhosting NZ</a>.</p>
+            <p className={s.sub} style={{ marginBottom: 24 }}>Free NZ Website Speed Test from <a href="/website-speed-tester/" style={{ color: '#09a6c1' }}>Webhosting NZ</a>.</p>
             <SpeedTestForm compact />
           </div>
         </section>

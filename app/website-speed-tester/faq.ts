@@ -1,4 +1,4 @@
-// Shown on /speed-test and used for its FAQPage structured data.
+// Shown on /website-speed-tester and used for its FAQPage structured data.
 export const SPEED_TEST_FAQ: { q: string; a: string }[] = [
   {
     q: 'Is this website speed checker free?',

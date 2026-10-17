@@ -9,6 +9,7 @@ const BASE_URL = 'https://webhosting.co.nz';
 const STATIC_ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']; priority: number }[] = [
   { path: '/', changeFrequency: 'weekly', priority: 1.0 },
   { path: '/web-hosting', changeFrequency: 'weekly', priority: 0.9 },
+  { path: '/small-business-web-hosting-nz', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/wordpress-hosting', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/website-builder-hosting', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/vps-hosting', changeFrequency: 'weekly', priority: 0.9 },

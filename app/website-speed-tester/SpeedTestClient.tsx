@@ -287,8 +287,9 @@ export default function SpeedTestClient() {
             <p>
               New Zealand is a long way from the big hosting hubs. A server in Singapore is about 8,400 km from Auckland, and one in the
               United States is more than 10,000 km away. Each round trip adds delay, and a page needs several before it shows. Hosting in
-              New Zealand, or using a CDN with local edge locations, keeps that trip short. Compare our{' '}
-              <a href="/web-hosting/">NZ web hosting</a> and <a href="/wordpress-hosting/">WordPress hosting</a> plans if your site is hosted overseas.
+              New Zealand, or using a CDN with local edge locations, keeps that trip short. Every one of our{' '}
+              <a href="/web-hosting/">web hosting</a> and <a href="/wordpress-hosting/">WordPress hosting</a> plans includes a free global
+              CDN, and small businesses can see which plan fits on our <a href="/small-business-web-hosting-nz/">small business web hosting</a> page.
             </p>
             <h3>How to make your website faster</h3>
             <p>

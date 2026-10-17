@@ -345,8 +345,8 @@ export default function ResultView({ r, device }: { r: PublicResult; device: 'mo
 
           {overseas ? (
             <div className={s.softCta}>
-              <h3>Most of your visitors in New Zealand?</h3>
-              <p>Your site is served from {h?.country}. Webhosting NZ hosting runs on servers in Auckland, so NZ visitors aren&apos;t waiting on a trip overseas.</p>
+              <h3>Want your site closer to NZ visitors?</h3>
+              <p>Your site is served from {h?.country}. Every Webhosting NZ plan includes a free global premium CDN that keeps copies of your pages close to your visitors, with 24/7 support from a 100% NZ-owned team.</p>
               <a className={s.softBtn} href="/web-hosting/">See NZ hosting plans</a>
             </div>
           ) : (r.score ?? 100) < 75 ? (

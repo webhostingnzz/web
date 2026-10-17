@@ -11786,3 +11786,18 @@ h1.whnz-blog-index-title {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(5px); }
 }
+
+/* Free Tools dropdown in the main nav (CSS only, works with every page's
+   ported header without touching the per-page nav scripts). */
+.whnz_nav_wrapper .whnz-tools-dd { position: relative; display: inline-flex; pointer-events: auto; }
+.whnz_nav_wrapper .whnz-tools-menu { position: absolute; top: 100%; left: 50%; transform: translate(-50%, 8px); min-width: 290px; padding: 10px; margin-top: 6px; background: #fff; border: 1px solid rgba(11,18,32,.1); border-radius: 14px; box-shadow: var(--whnz-shadow); opacity: 0; visibility: hidden; transition: opacity .18s ease, transform .18s ease, visibility .18s; z-index: 999999; }
+.whnz_nav_wrapper .whnz-tools-menu::before { content: ''; position: absolute; left: 0; right: 0; top: -14px; height: 14px; }
+.whnz_nav_wrapper .whnz-tools-dd:hover .whnz-tools-menu, .whnz_nav_wrapper .whnz-tools-dd:focus-within .whnz-tools-menu { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.whnz_nav_wrapper .whnz-tools-dd:hover > .whnz-link { background: rgba(12,192,223,.12); color: var(--whnz-accent); }
+.whnz_nav_wrapper .whnz-tools-item { display: block; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: var(--whnz-ink); }
+.whnz_nav_wrapper .whnz-tools-item:hover { background: rgba(12,192,223,.06); }
+.whnz_nav_wrapper .whnz-tools-item strong { display: block; font-size: 13px; font-weight: 800; }
+.whnz_nav_wrapper .whnz-tools-item small { display: block; font-size: 11px; color: var(--whnz-muted); margin-top: 2px; }
+.whnz_nav_wrapper .whnz-m-tools > summary { list-style: none; cursor: pointer; }
+.whnz_nav_wrapper .whnz-m-tools > summary::-webkit-details-marker { display: none; }
+.whnz_nav_wrapper .whnz-m-tools[open] > summary .whnz-caret { transform: rotate(225deg); }

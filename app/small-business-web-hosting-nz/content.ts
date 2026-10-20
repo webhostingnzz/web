@@ -79,7 +79,7 @@ const essentials = PLANS[0];
 export const SEO = {
   title: `Small Business Web Hosting NZ | ${money(essentials.monthly)}/mo GST Incl`,
   description: `Small business web hosting in NZ from ${money(essentials.monthly)}/month, GST included. Same price at renewal, free migration with no downtime, 24/7 support. 100% NZ owned.`,
-  ogImage: `${SITE_URL}/images/hero/web-hosting-hero.webp`,
+  ogImage: `${SITE_URL}/images/hero/small-business-hosting.webp`,
 };
 export const FIRST_YEAR_BUNDLE =
   Math.round((DOMAIN_CO_NZ_YEARLY + yearly(essentials.monthly)) * 100) / 100;
@@ -190,14 +190,14 @@ export const SUPPORT = {
   p1: "webhosting.co.nz is run by Bizgens Services Limited, 243A Warwick Road, Mayfair, Hastings. We are 100% New Zealand owned and operated, and you are billed in NZ dollars.",
   p2Lead: "Live chat is open 24/7/365, or you can call",
   p2Mid: "or email",
-  p3: "Every plan runs behind a free global premium CDN so your pages load quickly, backed by our 99.99% uptime guarantee.",
+  p3: "Our servers are located in Singapore, with hosting optimised for New Zealand customers. Every plan runs behind a free global premium CDN so your pages load quickly, backed by our 99.99% uptime guarantee.",
 };
 
 export const DOMAINS = {
   h2: "Add a domain and business email",
   p1Lead: "Buy a .co.nz, .nz or .kiwi.nz domain together with your hosting plan and it costs",
   p1Link: `${money(DOMAIN_CO_NZ_YEARLY)} a year`,
-  p1Tail: `instead of ${money(DOMAIN_CO_NZ_STANDALONE)} on its own. Every domain comes with a free 10GB mailbox, full DNS control and renewal reminders.`,
+  p1Tail: `instead of ${money(DOMAIN_CO_NZ_STANDALONE)} on its own. Every domain comes with a free 10GB mailbox when bought together with any of our hosting plans. Full DNS control and renewal reminders are included with every domain.`,
   p2Lead:
     "Every hosting plan already includes unlimited 10GB mailboxes on your own domain, so you can use you@yourbusiness.co.nz instead of a Gmail address. To run email as a separate service, with up to 25GB per mailbox,",
   p2Link: `business email hosting starts at ${money(BUSINESS_EMAIL_FROM)} a month`,

@@ -11838,3 +11838,9 @@ h1.whnz-blog-index-title {
 .whnz2-fast .whnz2-fast-tile h4 { margin: 0 !important; }
 .whnz2-fast .whnz2-fast-tile p { grid-column: 1 / -1; margin: 14px 0 0 !important; }
 .whnz2-fast .whnz2-perf-left > p:last-of-type { margin-bottom: 26px !important; }
+
+/* Homepage data centre map: extra pins drawn over the map image. */
+.whnz-map-wrap { position: relative; display: inline-block; max-width: 100%; line-height: 0; }
+.whnz-map-wrap img { max-width: 100%; height: auto; }
+.whnz-map-pin { position: absolute; width: 5.6%; height: auto; transform: translate(-50%, -100%); filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); }
+.whnz-map-pin-sg { left: 74.6%; top: 65%; }

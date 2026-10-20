@@ -11844,3 +11844,10 @@ h1.whnz-blog-index-title {
 .whnz-map-wrap img { max-width: 100%; height: auto; }
 .whnz-map-pin { position: absolute; width: 5.6%; height: auto; transform: translate(-50%, -100%); filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); }
 .whnz-map-pin-sg { left: 74.6%; top: 65%; }
+
+/* Footer copyright: on screens up to 1366px the footer columns lose their
+   95px bottom padding, so the copyright's -45px pull-up overlapped the last
+   links. Give it a positive gap there instead (wider screens unchanged). */
+@media (max-width: 1366px) {
+  footer .elementor-element-7cb84acd { margin-top: 28px !important; }
+}

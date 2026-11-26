@@ -11,7 +11,7 @@ const VISIT_KEY = 'whnz_visit_pinged';
 const GREETING: Msg = {
   role: 'assistant',
   content:
-    "Hi! I'm Hosty, Webhosting NZ's AI assistant. Ask me about hosting plans, domains, email or web design, and I can check a domain for you or connect you with our team.",
+    "Hi! I'm Junia, Webhosting NZ's AI assistant. Ask me about hosting plans, domains, email or web design, and I can check a domain for you or connect you with our team.",
 };
 const SUGGESTIONS = [
   'Which hosting plan is right for me?',
@@ -238,14 +238,13 @@ export default function AiChatWidget() {
           <div className={styles.header}>
             <div className={styles.avatar} aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="4" y="7" width="16" height="12" rx="3" />
-                <path d="M12 7V3M9 13h.01M15 13h.01M9 16.5h6" />
+                <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.6-.8L3 21l1.9-5.1A8.4 8.4 0 1 1 21 11.5z" />
               </svg>
             </div>
             <div className={styles.grow}>
-              <div className={styles.title}>{human ? 'Webhosting NZ team' : 'Hosty · Webhosting NZ'}</div>
+              <div className={styles.title}>{human ? 'Webhosting NZ team' : 'Junia AI'}</div>
               <div className={styles.sub}>
-                <span className={styles.dot} /> {human ? 'You are chatting with our team' : 'AI assistant · team on standby'}
+                <span className={styles.dot} /> {human ? 'You are chatting with our team' : 'Team on standby'}
               </div>
             </div>
             {!handedOff && !human && (
@@ -268,7 +267,7 @@ export default function AiChatWidget() {
               ) : null
             )}
             {typing && (
-              <div className={`${styles.msg} ${styles.bot}`} aria-label="Hosty is typing">
+              <div className={`${styles.msg} ${styles.bot}`} aria-label="Junia is typing">
                 <span className={styles.typing}>
                   <span />
                   <span />
@@ -320,9 +319,7 @@ export default function AiChatWidget() {
               </svg>
             </button>
           </form>
-          <div className={styles.foot}>
-            {human ? 'Chatting with a team member.' : 'AI can make mistakes. For account or billing issues, ask for a human.'}
-          </div>
+          <div className={styles.foot}>24x7 customer support service</div>
         </div>
       )}
 

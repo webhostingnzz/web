@@ -3,7 +3,7 @@ import GlobalScripts from './GlobalScripts';
 import PageTransition from './lib/PageTransition';
 import JsonLd from './components/JsonLd';
 import { getOrganizationSchema, getWebsiteSchema } from './lib/structuredData';
-import CharlaWidget from './components/CharlaWidget';
+import AiChatWidget from './components/AiChatWidget';
 
 export const metadata = {
   metadataBase: new URL('https://webhosting.co.nz'),
@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={getWebsiteSchema()} />
         <GlobalScripts />
         <PageTransition>{children}</PageTransition>
-        <CharlaWidget />
+        <AiChatWidget />
       </body>
     </html>
   );

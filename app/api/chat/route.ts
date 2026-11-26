@@ -18,6 +18,7 @@ export const maxDuration = 60;
 
 const MODEL = 'claude-sonnet-5-5';
 const MAX_TURNS = 30; // messages per conversation
+let topicsDownUntil = 0; // set when Telegram refuses to create topics, so we don't retry on every message
 const MAX_LEN = 1500; // characters per message
 const RATE_LIMIT = 25; // requests per IP per 10 minutes
 
@@ -263,11 +264,16 @@ export async function POST(req: NextRequest) {
         await touchSession(session.id, { page: pageUrl });
 
         // ---- each visitor gets their OWN Telegram topic (if the owner chat is a Topics group) ----
-        if (isNew && !session.tg_thread_id) {
-          const threadId = await tgCreateTopic(`💬 #${session.short_id} · ${pageUrl}${country ? ` · ${country}` : ''}`);
-          if (threadId) {
-            session.tg_thread_id = threadId;
-            await touchSession(session.id, { tg_thread_id: threadId });
+        // Also covers chats that were opened before topics existed: they get a topic on their next message.
+        let justCreatedTopic = false;
+        if (!session.tg_thread_id && Date.now() > topicsDownUntil) {
+          const newThread = await tgCreateTopic(`💬 #${session.short_id} · ${pageUrl}${country ? ` · ${country}` : ''}`);
+          if (newThread) {
+            session.tg_thread_id = newThread;
+            justCreatedTopic = true;
+            await touchSession(session.id, { tg_thread_id: newThread });
+          } else {
+            topicsDownUntil = Date.now() + 5 * 60 * 1000; // not a Topics group / no permission: stop retrying for a while
           }
         }
         const threadId = session.tg_thread_id;
@@ -275,12 +281,20 @@ export async function POST(req: NextRequest) {
         // ---- tell the owner on Telegram (runs alongside the AI) ----
         const who = session.name ? ` (${session.name})` : '';
         const tag = threadId ? '' : ` #${session.short_id}${who}`; // inside a topic the thread already identifies the visitor
+        const where = `Page: ${pageUrl}${country ? `\nCountry: ${country}` : ''}`;
+        const takeOver = threadId ? 'Type a message in this topic to take over.' : 'Reply to this message to take over.';
+        let intro: string | null = null;
+        if (isNew) {
+          intro = `💬 New chat${threadId ? '' : ` #${session.short_id}`}\n${where}\n\n👤 ${message}\n\nThe AI is answering. ${takeOver}`;
+        } else if (justCreatedTopic) {
+          const earlier = (await getHistory(session.id, 8)).slice(0, -1); // everything before this message
+          const recent = earlier
+            .map((m) => `${m.role === 'user' ? '👤' : m.role === 'agent' ? '🧑' : '🤖'} ${m.content.slice(0, 200)}`)
+            .join('\n');
+          intro = `💬 Chat continued${who}\n${where}\n${recent ? `\nEarlier:\n${recent}\n` : ''}\n👤 ${message}\n\n${session.mode === 'human' ? 'You are in control.' : 'The AI is answering.'} ${takeOver}`;
+        }
         const tgIn = tgSend(
-          isNew
-            ? threadId
-              ? `💬 New chat\nPage: ${pageUrl}${country ? `\nCountry: ${country}` : ''}\n\n👤 ${message}\n\nThe AI is answering. Type a message in this topic to take over.`
-              : `💬 New chat #${session.short_id}\nPage: ${pageUrl}${country ? `\nCountry: ${country}` : ''}\n\n👤 ${message}\n\nThe AI is answering. Reply to this message to take over.`
-            : `👤${tag}: ${message}${session.mode === 'human' ? `\n(you are in control - ${threadId ? 'type' : 'reply'} to answer)` : ''}`,
+          intro ?? `👤${tag}: ${message}${session.mode === 'human' ? `\n(you are in control - ${threadId ? 'type' : 'reply'} to answer)` : ''}`,
           { threadId }
         );
 

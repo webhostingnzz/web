@@ -55,6 +55,8 @@ function render(text: string): ReactNode {
 export default function AiChatWidget() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [rendered, setRendered] = useState(false); // panel mounted (stays true while animating out)
+  const [shown, setShown] = useState(false); // panel in its visible state (drives the CSS transition)
   const [msgs, setMsgs] = useState<Msg[]>([GREETING]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
@@ -155,6 +157,18 @@ export default function AiChatWidget() {
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
 
+  // Smooth open/close: keep the panel mounted while it animates out, then unmount.
+  useEffect(() => {
+    if (open) {
+      setRendered(true);
+      const t = setTimeout(() => setShown(true), 20); // lets the closed state paint first so the CSS transition runs
+      return () => clearTimeout(t);
+    }
+    setShown(false);
+    const t = setTimeout(() => setRendered(false), 220);
+    return () => clearTimeout(t);
+  }, [open]);
+
   if (pathname?.startsWith('/admin')) return null;
 
   async function send(text: string) {
@@ -233,8 +247,13 @@ export default function AiChatWidget() {
 
   return (
     <>
-      {open && (
-        <div className={styles.panel} role="dialog" aria-label="Chat with Webhosting NZ">
+      {rendered && (
+        <div
+          className={`${styles.panel} ${shown ? styles.panelOpen : ''}`}
+          role="dialog"
+          aria-label="Chat with Webhosting NZ"
+          aria-hidden={!open}
+        >
           <div className={styles.header}>
             <div className={styles.avatar} aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -252,8 +271,10 @@ export default function AiChatWidget() {
                 Talk to a human
               </button>
             )}
-            <button className={styles.close} onClick={() => setOpen(false)} aria-label="Close chat">
-              ×
+            <button className={styles.close} onClick={() => setOpen(false)} aria-label="Close chat" title="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
+                <path d="M6 6l12 12M18 6 6 18" />
+              </svg>
             </button>
           </div>
 
@@ -329,8 +350,11 @@ export default function AiChatWidget() {
         aria-label={open ? 'Close chat' : unread ? 'Open chat - new reply from our team' : 'Open chat with Webhosting NZ'}
         aria-expanded={open}
       >
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <svg className={`${styles.bubbleIcon} ${open ? styles.iconOut : ''}`} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.6-.8L3 21l1.9-5.1A8.4 8.4 0 1 1 21 11.5z" />
+        </svg>
+        <svg className={`${styles.bubbleIcon} ${open ? '' : styles.iconOut}`} width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
         </svg>
         {unread && <span className={styles.unread} aria-hidden="true" />}
       </button>

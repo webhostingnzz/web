@@ -3,6 +3,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import nodemailer from 'nodemailer';
 import { searchSite, getLivePricingText, getBlogIndex, getSiteMap } from '../../lib/chat/knowledge';
 import { tgSend, tgCreateTopic, tgRenameTopic } from '../../lib/chat/telegram';
+import { describeVisitor, getClientIp } from '../../lib/chat/visitorInfo';
 import {
   addMessage,
   createSession,
@@ -232,13 +233,15 @@ ${getBlogIndex()}`;
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  const country = req.headers.get('x-vercel-ip-country') || req.headers.get('cf-ipcountry') || null;
+  const visitor = describeVisitor(req.headers, req.headers.get('user-agent') || '');
+  const country = visitor.country;
 
   const body = await req.json().catch(() => null);
   const message = String(body?.message || '').trim().slice(0, MAX_LEN);
   const pageUrl = String(body?.page || '/').slice(0, 200);
   const sidIn = body?.sid;
+  // rate-limit per visitor IP; if the host doesn't pass one on, fall back to the chat id so visitors don't share one bucket
+  const ip = getClientIp(req.headers) || (isUuid(sidIn) ? `sid:${sidIn}` : 'unknown');
 
   const enc = new TextEncoder();
   const stream = new ReadableStream({
@@ -281,7 +284,8 @@ export async function POST(req: NextRequest) {
         // ---- tell the owner on Telegram (runs alongside the AI) ----
         const who = session.name ? ` (${session.name})` : '';
         const tag = threadId ? '' : ` #${session.short_id}${who}`; // inside a topic the thread already identifies the visitor
-        const where = `Page: ${pageUrl}${country ? `\nCountry: ${country}` : ''}`;
+        const where = `Page: ${pageUrl}\nLocation: ${visitor.location}\nBrowser: ${visitor.browserLine}`;
+        const movedTo = !isNew && !justCreatedTopic && session.page && session.page !== pageUrl ? `📍 now on ${pageUrl}\n` : '';
         const takeOver = threadId ? 'Type a message in this topic to take over.' : 'Reply to this message to take over.';
         let intro: string | null = null;
         if (isNew) {
@@ -294,7 +298,7 @@ export async function POST(req: NextRequest) {
           intro = `💬 Chat continued${who}\n${where}\n${recent ? `\nEarlier:\n${recent}\n` : ''}\n👤 ${message}\n\n${session.mode === 'human' ? 'You are in control.' : 'The AI is answering.'} ${takeOver}`;
         }
         const tgIn = tgSend(
-          intro ?? `👤${tag}: ${message}${session.mode === 'human' ? `\n(you are in control - ${threadId ? 'type' : 'reply'} to answer)` : ''}`,
+          intro ?? `${movedTo}👤${tag}: ${message}${session.mode === 'human' ? `\n(you are in control - ${threadId ? 'type' : 'reply'} to answer)` : ''}`,
           { threadId }
         );
 

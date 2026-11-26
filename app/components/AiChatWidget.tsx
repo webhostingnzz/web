@@ -7,7 +7,7 @@ import styles from './AiChatWidget.module.css';
 type Msg = { role: 'user' | 'assistant'; content: string; agent?: boolean };
 
 const STORAGE_KEY = 'whnz_ai_chat_v2';
-const VISIT_KEY = 'whnz_visit_pinged';
+const VISIT_KEY = 'whnz_visit_v2';
 const GREETING: Msg = {
   role: 'assistant',
   content:
@@ -94,23 +94,56 @@ export default function AiChatWidget() {
     }
   }, [msgs, handedOff, human, sid, lastAgentId]);
 
-  // live-visitor ping, once per browser session
+  // Live-visitor alert: one Telegram message per visit, updated as the visitor opens other pages.
+  const visitQueue = useRef<Promise<void>>(Promise.resolve());
   useEffect(() => {
-    if (pathname?.startsWith('/admin')) return;
+    if (!pathname || pathname.startsWith('/admin')) return;
+    let state: { mid: number | null; trail: string[]; ref: string } = { mid: null, trail: [], ref: '' };
     try {
-      if (sessionStorage.getItem(VISIT_KEY)) return;
-      sessionStorage.setItem(VISIT_KEY, '1');
+      const saved = JSON.parse(sessionStorage.getItem(VISIT_KEY) || 'null');
+      if (saved && Array.isArray(saved.trail)) state = saved;
+      else state.ref = document.referrer || '';
     } catch {
-      /* ignore */
+      state.ref = document.referrer || '';
     }
-    fetch('/api/chat/visit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ page: window.location.pathname, referrer: document.referrer }),
-      keepalive: true,
-    }).catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (state.trail[state.trail.length - 1] === pathname) return; // already reported (e.g. a reload)
+    state.trail = [...state.trail, pathname].slice(-8);
+
+    const save = () => {
+      try {
+        sessionStorage.setItem(VISIT_KEY, JSON.stringify(state));
+      } catch {
+        /* ignore */
+      }
+    };
+    save();
+
+    // wait a moment on later pages (skips quick click-throughs), and send one at a time so the first reply (message id) is known
+    const t = setTimeout(
+      () => {
+        visitQueue.current = visitQueue.current.then(async () => {
+          try {
+            const mid = JSON.parse(sessionStorage.getItem(VISIT_KEY) || 'null')?.mid ?? state.mid;
+            const res = await fetch('/api/chat/visit', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ page: pathname, referrer: state.ref, trail: state.trail, mid }),
+              keepalive: true,
+            });
+            const data = await res.json().catch(() => null);
+            if (!mid && data?.mid) {
+              state.mid = data.mid;
+              save();
+            }
+          } catch {
+            /* ignore */
+          }
+        });
+      },
+      state.mid ? 1500 : 0
+    );
+    return () => clearTimeout(t);
+  }, [pathname]);
 
   // pick up replies the team sends from Telegram
   useEffect(() => {

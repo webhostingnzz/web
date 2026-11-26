@@ -58,3 +58,28 @@ export async function tgRenameTopic(threadId: number, name: string): Promise<voi
   if (!chatId) return;
   await call('editForumTopic', { chat_id: chatId, message_thread_id: threadId, name: name.slice(0, 120) });
 }
+
+// Like tgSend, but returns the Telegram message id so the message can be edited later.
+export async function tgSendGetId(text: string, opts: { threadId?: number | null } = {}): Promise<number | null> {
+  const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
+  if (!chatId) return null;
+  const result = await call('sendMessage', {
+    chat_id: chatId,
+    text: text.slice(0, 4000),
+    disable_web_page_preview: true,
+    ...(opts.threadId ? { message_thread_id: opts.threadId } : {}),
+  });
+  return typeof result?.message_id === 'number' ? result.message_id : null;
+}
+
+export async function tgEdit(messageId: number, text: string): Promise<boolean> {
+  const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
+  if (!chatId) return false;
+  const result = await call('editMessageText', {
+    chat_id: chatId,
+    message_id: messageId,
+    text: text.slice(0, 4000),
+    disable_web_page_preview: true,
+  });
+  return !!result;
+}

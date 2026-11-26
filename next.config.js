@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // geoip-country reads its data files from disk, so keep it out of the server bundle
+  serverExternalPackages: ['geoip-country'],
   images: { unoptimized: true },
   trailingSlash: true,
   // Force www.webhosting.co.nz to permanently redirect to the non-www

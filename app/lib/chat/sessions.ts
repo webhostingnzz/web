@@ -9,13 +9,19 @@ export type ChatSession = {
   country: string | null;
   name: string | null;
   email: string | null;
+  tg_thread_id: number | null; // this visitor's own Telegram topic (when the owner chat is a Topics group)
 };
 export type StoredMessage = { id: number; role: 'user' | 'assistant' | 'agent'; content: string };
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const isUuid = (s: unknown): s is string => typeof s === 'string' && UUID.test(s);
 
-const COLS = 'id, short_id, mode, page, country, name, email';
+const COLS = 'id, short_id, mode, page, country, name, email, tg_thread_id';
+
+export async function getSessionByThread(threadId: number): Promise<ChatSession | null> {
+  const { data } = await getSupabaseAdmin().from('chat_sessions').select(COLS).eq('tg_thread_id', threadId).maybeSingle();
+  return (data as ChatSession) || null;
+}
 
 export async function getSession(id: string): Promise<ChatSession | null> {
   if (!isUuid(id)) return null;
@@ -38,7 +44,7 @@ export async function createSession(page: string, country: string | null): Promi
   return data as ChatSession;
 }
 
-export async function touchSession(id: string, patch: Partial<Pick<ChatSession, 'page' | 'name' | 'email' | 'mode'>> = {}) {
+export async function touchSession(id: string, patch: Partial<Pick<ChatSession, 'page' | 'name' | 'email' | 'mode' | 'tg_thread_id'>> = {}) {
   await getSupabaseAdmin()
     .from('chat_sessions')
     .update({ last_seen: new Date().toISOString(), ...patch })

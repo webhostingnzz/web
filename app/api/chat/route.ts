@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import nodemailer from 'nodemailer';
 import { searchSite, getLivePricingText, getBlogIndex, getSiteMap } from '../../lib/chat/knowledge';
-import { tgSend } from '../../lib/chat/telegram';
+import { tgSend, tgCreateTopic, tgRenameTopic } from '../../lib/chat/telegram';
 import {
   addMessage,
   createSession,
@@ -115,6 +115,9 @@ async function sendHandoff(input: HandoffInput, ctx: Ctx): Promise<string> {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'ERROR: the email address is not valid. Ask the customer for a correct email.';
   const urgency = input.urgency || 'normal';
   await touchSession(ctx.session.id, { name: String(input.name).slice(0, 80), email });
+  if (ctx.session.tg_thread_id) {
+    await tgRenameTopic(ctx.session.tg_thread_id, `🙋 ${String(input.name).slice(0, 40)} · #${ctx.session.short_id}`);
+  }
   const results = await Promise.all([sendEmail(input, email, urgency, ctx), sendTelegramHandoff(input, email, urgency, ctx)]);
   if (results.some(Boolean)) {
     return 'OK: the team has been notified and will reply to the customer shortly (in this chat or by email). Tell the customer this.';
@@ -171,8 +174,11 @@ async function sendTelegramHandoff(input: HandoffInput, email: string, urgency: 
       `Summary: ${input.summary}`,
       `Page: ${ctx.pageUrl}`,
       '',
-      'Reply to THIS message to take over the chat. Your reply appears live in their chat window and the AI stops answering. Send /ai as a reply to hand back to the AI.',
-    ].join('\n')
+      ctx.session.tg_thread_id
+        ? 'Type a message in this topic to take over. It appears live in their chat window and the AI stops answering. Send /ai here to hand back to the AI.'
+        : 'Reply to THIS message to take over the chat. Your reply appears live in their chat window and the AI stops answering. Send /ai as a reply to hand back to the AI.',
+    ].join('\n'),
+    { threadId: ctx.session.tg_thread_id }
   );
 }
 
@@ -256,12 +262,26 @@ export async function POST(req: NextRequest) {
         await addMessage(session.id, 'user', message);
         await touchSession(session.id, { page: pageUrl });
 
+        // ---- each visitor gets their OWN Telegram topic (if the owner chat is a Topics group) ----
+        if (isNew && !session.tg_thread_id) {
+          const threadId = await tgCreateTopic(`💬 #${session.short_id} · ${pageUrl}${country ? ` · ${country}` : ''}`);
+          if (threadId) {
+            session.tg_thread_id = threadId;
+            await touchSession(session.id, { tg_thread_id: threadId });
+          }
+        }
+        const threadId = session.tg_thread_id;
+
         // ---- tell the owner on Telegram (runs alongside the AI) ----
         const who = session.name ? ` (${session.name})` : '';
+        const tag = threadId ? '' : ` #${session.short_id}${who}`; // inside a topic the thread already identifies the visitor
         const tgIn = tgSend(
           isNew
-            ? `💬 New chat #${session.short_id}\nPage: ${pageUrl}${country ? `\nCountry: ${country}` : ''}\n\n👤 ${message}\n\nThe AI is answering. Reply to this message to take over.`
-            : `👤 #${session.short_id}${who}: ${message}${session.mode === 'human' ? '\n(you are in control - reply to answer)' : ''}`
+            ? threadId
+              ? `💬 New chat\nPage: ${pageUrl}${country ? `\nCountry: ${country}` : ''}\n\n👤 ${message}\n\nThe AI is answering. Type a message in this topic to take over.`
+              : `💬 New chat #${session.short_id}\nPage: ${pageUrl}${country ? `\nCountry: ${country}` : ''}\n\n👤 ${message}\n\nThe AI is answering. Reply to this message to take over.`
+            : `👤${tag}: ${message}${session.mode === 'human' ? `\n(you are in control - ${threadId ? 'type' : 'reply'} to answer)` : ''}`,
+          { threadId }
         );
 
         // ---- owner has taken over: no AI ----
@@ -317,7 +337,12 @@ export async function POST(req: NextRequest) {
         if (answer.trim()) {
           await addMessage(session.id, 'assistant', answer.trim());
           await tgIn;
-          await tgSend(`🤖 AI → #${session.short_id}: ${answer.trim().slice(0, 700)}\n\n(reply to this to take over)`);
+          await tgSend(
+            threadId
+              ? `🤖 AI: ${answer.trim().slice(0, 700)}\n\n(type here to take over)`
+              : `🤖 AI → #${session.short_id}: ${answer.trim().slice(0, 700)}\n\n(reply to this to take over)`,
+            { threadId }
+          );
         } else {
           await tgIn;
         }

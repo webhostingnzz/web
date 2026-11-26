@@ -154,7 +154,14 @@ export default function AiChatWidget() {
     inputRef.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    // On phones the chat is full screen: stop the page behind it from scrolling.
+    const phone = window.matchMedia('(max-width: 520px)').matches;
+    const prevOverflow = document.body.style.overflow;
+    if (phone) document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      if (phone) document.body.style.overflow = prevOverflow;
+    };
   }, [open]);
 
   // Smooth open/close: keep the panel mounted while it animates out, then unmount.
@@ -278,6 +285,15 @@ export default function AiChatWidget() {
             </button>
           </div>
 
+          {!handedOff && !human && (
+            <div className={styles.humanBar}>
+              <span>Prefer a person?</span>
+              <button onClick={() => send('I would like to talk to a human please.')} disabled={busy}>
+                Talk to a human
+              </button>
+            </div>
+          )}
+
           <div className={styles.log} ref={logRef} aria-live="polite">
             {msgs.map((m, i) =>
               m.content ? (
@@ -350,13 +366,16 @@ export default function AiChatWidget() {
         aria-label={open ? 'Close chat' : unread ? 'Open chat - new reply from our team' : 'Open chat with Webhosting NZ'}
         aria-expanded={open}
       >
-        <svg className={`${styles.bubbleIcon} ${open ? styles.iconOut : ''}`} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.6-.8L3 21l1.9-5.1A8.4 8.4 0 1 1 21 11.5z" />
-        </svg>
-        <svg className={`${styles.bubbleIcon} ${open ? '' : styles.iconOut}`} width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
-          <path d="M6 6l12 12M18 6 6 18" />
-        </svg>
-        {unread && <span className={styles.unread} aria-hidden="true" />}
+        <span className={styles.bubbleIconWrap}>
+          <svg className={`${styles.bubbleIcon} ${open ? styles.iconOut : ''}`} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.6-.8L3 21l1.9-5.1A8.4 8.4 0 1 1 21 11.5z" />
+          </svg>
+          <svg className={`${styles.bubbleIcon} ${open ? '' : styles.iconOut}`} width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+          {unread && <span className={styles.unread} aria-hidden="true" />}
+        </span>
+        <span className={styles.bubbleLabel}>{open ? 'Close' : 'Hello'}</span>
       </button>
     </>
   );

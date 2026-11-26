@@ -1,4 +1,4 @@
-import geoip from 'geoip-country';
+import path from 'path';
 
 // Works out where a visitor is (country) and what they are using (browser / OS / device),
 // from the request headers. The country comes from an offline IP database bundled with the
@@ -15,6 +15,25 @@ function clean(ip: string | null | undefined): string | null {
   if (/^\d+\.\d+\.\d+\.\d+:\d+$/.test(v)) v = v.split(':')[0];
   v = v.replace(/^\[|\]$/g, '');
   return PRIVATE.test(v) ? null : v;
+}
+
+type Geo = { lookup(ip: string): { name?: string } | null };
+let geo: Geo | null | undefined;
+
+// Loaded lazily and defensively: if the database can't be read, locations simply show as unknown
+// instead of taking the chat down with it.
+function loadGeo(): Geo | null {
+  if (geo !== undefined) return geo;
+  try {
+    // Use the database we ship inside the repo (a host can drop the copy inside node_modules).
+    (globalThis as { geodatadir?: string }).geodatadir = path.join(process.cwd(), 'app', 'data', 'geo');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    geo = require('geoip-country') as Geo;
+  } catch (err) {
+    console.error('geoip-country unavailable, locations will show as unknown:', (err as Error).message);
+    geo = null;
+  }
+  return geo;
 }
 
 export function getClientIp(h: Headers): string | null {
@@ -84,7 +103,7 @@ export function describeVisitor(h: Headers, ua: string): VisitorInfo {
     const ip = getClientIp(h);
     if (ip) {
       try {
-        country = geoip.lookup(ip)?.name || null;
+        country = loadGeo()?.lookup(ip)?.name || null;
       } catch {
         country = null;
       }
